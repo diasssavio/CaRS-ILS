@@ -1,9 +1,10 @@
-/*
- * uraphmp.cpp
- *
- *  Created on: Apr 20, 2015
- *      Author: savio
- */
+//============================================================================
+// Name        : instance.cpp
+// Author      : Sávio S. Dias
+// E-mail      : diasssavio@gmail.com
+// Institution : Universidade Federal Fluminense
+// Description : 
+//============================================================================
 
 #include "../include/instance.h"
 

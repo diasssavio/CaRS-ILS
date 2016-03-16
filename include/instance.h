@@ -1,9 +1,10 @@
-/*
- * uraphmp.h
- *
- *  Created on: Apr 20, 2015
- *      Author: Sávio S. Dias
- */
+//============================================================================
+// Name        : instance.h
+// Author      : Sávio S. Dias
+// E-mail      : diasssavio@gmail.com
+// Institution : Universidade Federal Fluminense
+// Description : 
+//============================================================================
 
 #ifndef INSTANCE_H_
 #define INSTANCE_H_

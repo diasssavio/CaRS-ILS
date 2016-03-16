@@ -1,9 +1,9 @@
 //============================================================================
 // Name        : main.cpp
 // Author      : Sávio S. Dias
-// Version     : 1.0
-// Copyright   :
-// Description : A GRASP/ILS-based heuristic for the UrApHMP
+// E-mail      : diasssavio@gmail.com
+// Institution : Universidade Federal Fluminense
+// Description : 
 //============================================================================
 
 #include <iostream>
@@ -15,6 +15,7 @@
 #include "../include/FWChrono.h"
 #include "../include/mt19937ar.h"
 #include "../include/instance.h"
+#include "../include/solution.h"
 
 using namespace std;
 
@@ -36,6 +37,21 @@ int main(int argc, char* args[]) {
 
 	instance cars;
 	cars.read_data();
+
+	vector< unsigned > route;
+	for(unsigned i = 0; i < cars.get_n(); i++) route.push_back(i);
+	vector< t_vec > vehicles;
+	for(unsigned k = 0; k < cars.get_c(); k++) {
+		t_vec aux;
+		aux.number = k;
+		aux.begin = k * (cars.get_n() / cars.get_c());
+		aux.end = (k + 1) * (cars.get_n() / cars.get_c());
+		vehicles.push_back(aux);
+	}
+	solution sol(cars);
+	sol.set_route(route);
+	sol.set_vehicles(vehicles);
+	sol.show_data();
 
 	/*int max_iterations = 0.1 * n;
 	int max_r = max_iterations / 2;

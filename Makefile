@@ -87,8 +87,8 @@ $(TMP_ILS)/instance.o: $(SRC)/instance.cpp $(INCLUDE)/instance.h
 	$(CCC) -c $(CCFLAGS) $(SRC)/instance.cpp -o $(TMP_ILS)/instance.o
 
 # STRUCTURE - SOLUTION
-# $(TMP_ILS)/solution.o: $(SRC)/solution.cpp $(INCLUDE)/solution.h
-# 	$(CCC) -c $(CCFLAGS) $(SRC)/solution.cpp -o $(TMP_ILS)/solution.o
+$(TMP_ILS)/solution.o: $(SRC)/solution.cpp $(INCLUDE)/solution.h
+	$(CCC) -c $(CCFLAGS) $(SRC)/solution.cpp -o $(TMP_ILS)/solution.o
 
 # STRUCTURE - TIMER
 $(TMP_ILS)/FWChrono.o: $(SRC)/FWChrono.cpp $(INCLUDE)/FWChrono.h
@@ -112,9 +112,9 @@ $(TMP_ILS)/Configuration.o: $(TMP_ILS)/FWChrono.o $(TMP_ILS)/mt19937ar.o
 	gcc -Wl,-r $(TMP_ILS)/FWChrono.o $(TMP_ILS)/mt19937ar.o -o $(TMP_ILS)/Configuration.o -nostdlib
 
 # STRUCTURE & TIMER
-$(TMP_ILS)/Structure.o:  $(TMP_ILS)/instance.o #$(TMP_ILS)/solution.o
-	# gcc -Wl,-r $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o -o $(TMP_ILS)/Structure.o -nostdlib
-	gcc -Wl,-r $(TMP_ILS)/instance.o -o $(TMP_ILS)/Structure.o -nostdlib
+$(TMP_ILS)/Structure.o:  $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o
+	gcc -Wl,-r $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o -o $(TMP_ILS)/Structure.o -nostdlib
+	# gcc -Wl,-r $(TMP_ILS)/instance.o -o $(TMP_ILS)/Structure.o -nostdlib
 
 # ILS
 # $(TMP_ILS)/ILS.o: $(TMP_ILS)/ils.o
