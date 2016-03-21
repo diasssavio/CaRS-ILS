@@ -57,6 +57,7 @@ public:
 	const vector< unsigned >& get_route() const;
 	const vector< t_vec >& get_vehicles() const;
 	double get_cost();
+	double evaluate();
 
 	// Useful Methods
 	void show_data();

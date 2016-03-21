@@ -32,6 +32,23 @@ const vector< t_vec >& solution::get_vehicles() const { return vehicles; }
 
 double solution::get_cost() { return cost; }
 
+double solution::evaluate() {
+	double cost = 0.0;
+	unsigned k = 0;
+	for(unsigned i = 0; i < cars.get_n() - 1; i++) {
+		cost += cars.get_distances()[ vehicles[k].number ][ route[i] ][ route[i+1] ];
+		// cout << cost << "\t";
+		if(vehicles[k].end == route[i+1])	k++;
+	}
+	cost += cars.get_distances()[ vehicles[k].number ][ route[cars.get_n()-1] ][ route[vehicles[k].end] ];
+	// cout << cost << "\n";
+	// cout << vehicles[k-1].number << "\t" << route[cars.get_n()-1] << "\t" << 
+	for(unsigned k = 0; k < vehicles.size(); k++)
+		cost += cars.get_return_rates()[ vehicles[k].number ][ vehicles[k].begin ][ vehicles[k].end ];
+
+	return cost;
+}
+
 void solution::show_data() {
 	unsigned k = 0;
 	for(unsigned i = 0; i < cars.get_n(); i++) {

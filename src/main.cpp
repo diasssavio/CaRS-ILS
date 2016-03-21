@@ -59,6 +59,7 @@ int main(int argc, char* args[]) {
 	}
 	
 	sol.show_data();
+	// cout << "Total Cost: " << sol.evaluate() << endl;
 
 	/*int max_iterations = 0.1 * n;
 	int max_r = max_iterations / 2;

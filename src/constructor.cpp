@@ -32,15 +32,15 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 
 	// Selecting number of nodes for each vehicle
 	// TODO Randomize the weights of the vehicles
-	vector< unsigned > weights(c);
+	vector< unsigned > weights(allowed_cars.size());
 	// unsigned value = n - c;
-	for(unsigned k = 0; k < c - 1; k++) {
-		weights[k] = n/c;
+	for(unsigned k = 0; k < allowed_cars.size() - 1; k++) {
+		weights[k] = n/allowed_cars.size();
 		// value -= weights[k];
-		printf("%4d", weights[k]);
+		// printf("%4d", weights[k]);
 	}
-	weights[c - 1] = ceil(n/c);
-	printf("%4d\n", weights[c - 1]);
+	weights[allowed_cars.size() - 1] = ceil(n/allowed_cars.size());
+	// printf("%4d\n", weights[allowed_cars.size() - 1]);
 
 	// Mounting the initial tour
 	unsigned rent_place = 0;
@@ -88,18 +88,19 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 		aux.begin = rent_place;
 		aux.end = return_place;
 		cost += rates_c[rent_place][return_place];
+		// cout << "Current Cost: " << cost << "\n";
 
 		// Removing return_place from the CL
 		if(return_place)
 			CL.erase(find(CL.begin(), CL.end(), return_place));
 
-		cout << aux.number << ": " << rent_place << "~>" << return_place << endl;
+		// cout << "Vehicle " << aux.number << ": " << rent_place << "~>" << return_place << endl;
 
 		// Mounting the route based on chosen car
 		while(CL.size() > 0) {
 			if(no_counter == weights[chosen_i]) {
-				trip.push_back(return_place);
 				cost += distances_c[ trip[trip.size() - 1] ][return_place];
+				trip.push_back(return_place);
 				break;
 			}
 
@@ -116,14 +117,6 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 						next_pos = 1;
 						next_cost = g_k;
 					}
-				// } else if(CL[i] == return_place) { // If the point is the return_place, then it can be only inserted in the end
-				// 	double g_k = distances_c[ trip[trip.size() - 1] ][return_place] - gamma_value;
-				// 	if(g_k < next_cost) {
-				// 		next_point = CL[i];
-				// 		cl_pos = i;
-				// 		next_pos = trip.size();
-				// 		next_cost = g_k;
-				// 	}
 				} else { // Insertion on the middle of the trip
 					for(unsigned j = 1; j < trip.size(); j++) {
 						double g_k = distances_c[ trip[j - 1] ][ CL[i] ] + distances_c[ CL[i] ][ trip[j] ] - distances_c[ trip[j - 1] ][ trip[j] ] - gamma_value;
@@ -145,35 +138,38 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 				}
 			}
 
-			cout << next_point << ":\t";
+			// cout << "Inserting " << next_point << "...\t";
 
 			// Check next_pos for insertion of next_point & removing it from CL
 			if(trip.size() == 1) {
-				trip.push_back(next_point);
 				cost += distances_c[rent_place][next_point];
+				trip.push_back(next_point);
+				// cout << "Current Cost: " << cost << "\n";
 				CL.erase(CL.begin() + cl_pos);
 			} else {
 				if(next_pos == trip.size()) { // If insertion on the end
-					trip.push_back(next_point);
 					cost += distances_c[ trip[next_pos - 1] ][next_point];
+					trip.push_back(next_point);
+					// cout << "Current Cost: " << cost << "\n";
 				} else {
-					trip.insert(trip.begin() + next_pos, next_point);
 					cost += distances_c[ trip[next_pos - 1] ][next_point] + distances_c[next_point][ trip[next_pos] ] - distances_c[ trip[next_pos - 1] ][ trip[next_pos] ];
+					trip.insert(trip.begin() + next_pos, next_point);
+					// cout << "Current Cost: " << cost << "\n";
 				}
 				CL.erase(CL.begin() + cl_pos);	
 			}
 
-			for(unsigned k = 0; k < trip.size(); k++)
-				printf("%4d", trip[k]);
-			printf("\n");
+			// for(unsigned k = 0; k < trip.size(); k++)
+				// printf("%4d", trip[k]);
+			// printf("\n");
 
 			no_counter++;
 			// if(next_point == return_place) break;
 		}
 
 		if(CL.size() == 0) {
-			trip.push_back(return_place);
 			cost += distances_c[ trip[trip.size() - 1] ][return_place];
+			trip.push_back(return_place);
 		}
 
 		// Removing the used car from allowed_cars
@@ -184,9 +180,9 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 		vehicles.push_back(aux);
 		for(unsigned i = 1; i < trip.size(); i++) {
 			route.push_back(trip[i]);
-			printf("%4d", trip[i]);
+			// printf("%4d", trip[i]);
 		}
-		printf("\n");
+		// printf("\n");
 	}
 
 	solution result(cars);
