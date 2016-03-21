@@ -99,6 +99,8 @@ $(TMP_ILS)/mt19937ar.o: $(SRC)/mt19937ar.c $(INCLUDE)/mt19937ar.h
 	$(CCC) -c $(CCFLAGS) $(SRC)/mt19937ar.c -o $(TMP_ILS)/mt19937ar.o
 
 # ILS
+$(TMP_ILS)/constructor.o: $(SRC)/constructor.cpp $(INCLUDE)/constructor.h
+	$(CCC) -c $(CCFLAGS) $(SRC)/constructor.cpp -o $(TMP_ILS)/constructor.o
 # $(TMP_ILS)/ils.o: $(SRC)/ils.cpp $(INCLUDE)/ils.h
 # 	$(CCC) -c $(CCFLAGS) $(SRC)/ils.cpp -o $(TMP_ILS)/ils.o
 
@@ -117,13 +119,15 @@ $(TMP_ILS)/Structure.o:  $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o
 	# gcc -Wl,-r $(TMP_ILS)/instance.o -o $(TMP_ILS)/Structure.o -nostdlib
 
 # ILS
+$(TMP_ILS)/ILS.o: $(TMP_ILS)/constructor.o
+	gcc -Wl,-r $(TMP_ILS)/constructor.o -o $(TMP_ILS)/ILS.o -nostdlib
 # $(TMP_ILS)/ILS.o: $(TMP_ILS)/ils.o
 # 	gcc -Wl,-r $(TMP_ILS)/ils.o -o $(TMP_ILS)/ILS.o -nostdlib
 
 ########################## LINKANDO TUDO ########################################################
 
-# $(CPP_EX): $(TMP_ILS)/Configuration.o $(TMP_ILS)/Structure.o $(TMP_ILS)/ILS.o $(TMP_ILS)/main.o
-	# $(CCC)  $(CCFLAGS) $(TMP_ILS)/Configuration.o $(TMP_ILS)/Structure.o $(TMP_ILS)/ILS.o $(TMP_ILS)/main.o -L$(TMP_STATIC) -o $(CPP_EX)
-$(CPP_EX): $(TMP_ILS)/Configuration.o $(TMP_ILS)/Structure.o $(TMP_ILS)/main.o
-	$(CCC)  $(CCFLAGS) $(TMP_ILS)/Configuration.o $(TMP_ILS)/Structure.o $(TMP_ILS)/main.o -L$(TMP_STATIC) -o $(CPP_EX)
+$(CPP_EX): $(TMP_ILS)/Configuration.o $(TMP_ILS)/Structure.o $(TMP_ILS)/ILS.o $(TMP_ILS)/main.o
+	$(CCC)  $(CCFLAGS) $(TMP_ILS)/Configuration.o $(TMP_ILS)/Structure.o $(TMP_ILS)/ILS.o $(TMP_ILS)/main.o -L$(TMP_STATIC) -o $(CPP_EX)
+# $(CPP_EX): $(TMP_ILS)/Configuration.o $(TMP_ILS)/Structure.o $(TMP_ILS)/main.o
+# 	$(CCC)  $(CCFLAGS) $(TMP_ILS)/Configuration.o $(TMP_ILS)/Structure.o $(TMP_ILS)/main.o -L$(TMP_STATIC) -o $(CPP_EX)
 #endif

@@ -8,14 +8,17 @@
 
 #include <iostream>
 #include <sstream>
+#include <fstream>
 #include <vector>
 #include <cstdio>
 #include <ctime>
+#include <cstring>
 
 #include "../include/FWChrono.h"
 #include "../include/mt19937ar.h"
 #include "../include/instance.h"
 #include "../include/solution.h"
+#include "../include/constructor.h"
 
 using namespace std;
 
@@ -38,6 +41,12 @@ int main(int argc, char* args[]) {
 	instance cars;
 	cars.read_data();
 
+	constructor cons(cars, 0.5);
+	vector< unsigned > cars_set;
+	for(unsigned k = 0; k < cars.get_c(); k++)
+		cars_set.push_back(k);
+	solution sol = cons.generate_sol(cars_set);
+
 	vector< unsigned > route;
 	for(unsigned i = 0; i < cars.get_n(); i++) route.push_back(i);
 	vector< t_vec > vehicles;
@@ -48,9 +57,7 @@ int main(int argc, char* args[]) {
 		aux.end = (k + 1) * (cars.get_n() / cars.get_c());
 		vehicles.push_back(aux);
 	}
-	solution sol(cars);
-	sol.set_route(route);
-	sol.set_vehicles(vehicles);
+	
 	sol.show_data();
 
 	/*int max_iterations = 0.1 * n;
@@ -79,6 +86,10 @@ int main(int argc, char* args[]) {
 
 	printf("%.2lf,%.2lf\n", min_time, result.get_total_cost());
 	// cout << "," << seed << endl;*/
+
+	if(argc == 3) {
+		sol.show_latex(args[2]);
+	}
 
 	return 0;
 }

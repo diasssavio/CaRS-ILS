@@ -15,6 +15,10 @@
 #include <utility>
 #include <limits>
 #include <iostream>
+#include <cstring>
+#include <cstdio>
+#include <sstream>
+#include <fstream>
 
 #include "instance.h"
 
@@ -56,6 +60,7 @@ public:
 
 	// Useful Methods
 	void show_data();
+	void show_latex( char* );
 
 };
 
