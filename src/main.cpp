@@ -16,10 +16,12 @@
 #include <cstring>
 
 #include "../include/FWChrono.h"
+#include "../include/logger.h"
 #include "../include/mt19937ar.h"
 #include "../include/instance.h"
 #include "../include/solution.h"
 #include "../include/constructor.h"
+#include "../include/ils.h"
 
 using namespace std;
 
@@ -31,33 +33,13 @@ T string_to(const string& s){
 	return x;
 }
 
-int conj[32];
-int cont;
-vector< vector< unsigned > > sets;
-void subsets(int i, int n){
-	int j;
-	if(i > n){
-		// printf("%d subsets:",++cont);
-    vector< unsigned > aux;
-  	for(j = 1; j <= n; j++)
-    	if(conj[j] == 1)
-    		aux.push_back(j);
-    sets.push_back(aux);
-	}else{
-  	conj[i] = 1;
-  	subsets(i + 1, n);
-  	conj[i] = 0;
-  	subsets(i + 1, n);
-  }
-}
-
 int main(int argc, char* args[]) {
 	FWChrono timer;
 	timer.start();
 
 	unsigned long seed = time(NULL);
-	if(argc == 2)
-		seed = string_to<unsigned long>(args[1]);
+	if(argc >= 2)
+		seed = string_to< unsigned long >(args[1]);
 	// time_t seed = time(NULL);
 	// srand(seed);
 	init_genrand(seed);
@@ -66,39 +48,14 @@ int main(int argc, char* args[]) {
 	cars.read_data();
 
 	double alpha = 0.2;
-	constructor cons(cars, alpha);
+	unsigned max_it = 50;
+	logger logs(timer);
+	ils ILS(cars, max_it, alpha, logs);
+	solution best = ILS.execute();
 
-	// TODO Generate do sets from possible vehicles and make the MS
-	vector< unsigned > cars_set;
-	for(unsigned k = 0; k < cars.get_c(); k++)
-		cars_set.push_back(k);
-
-	solution sol(cars);
-	subsets(1, cars.get_c());
-	for(unsigned i = 0; i < sets.size() - 1; i++) {
-		printf("{");
-		for(unsigned j = 0; j < sets[i].size(); j++)
-			printf("%d ", --sets[i][j]);
-		printf("}\n");
-		sol = cons.generate_sol(sets[i]);
-		sol.show_data();
-	}
-
-	// solution sol = cons.generate_sol(cars_set);
-
-	/*vector< unsigned > route;
-	for(unsigned i = 0; i < cars.get_n(); i++) route.push_back(i);
-	vector< t_vec > vehicles;
-	for(unsigned k = 0; k < cars.get_c(); k++) {
-		t_vec aux;
-		aux.number = k;
-		aux.begin = k * (cars.get_n() / cars.get_c());
-		aux.end = (k + 1) * (cars.get_n() / cars.get_c());
-		vehicles.push_back(aux);
-	}*/
-	
-	// sol.show_data();
-	// cout << "Total Cost: " << sol.evaluate() << endl;
+	vector< pair< unsigned, unsigned> > pos = best.get_pos();
+	for(unsigned i = 0; i < pos.size(); i++)
+		printf("%d %d\n", pos[i].first, pos[i].second);
 
 	/*int max_iterations = 0.1 * n;
 	int max_r = max_iterations / 2;
@@ -127,8 +84,8 @@ int main(int argc, char* args[]) {
 	printf("%.2lf,%.2lf\n", min_time, result.get_total_cost());
 	// cout << "," << seed << endl;*/
 
-	if(argc == 3)
-		sol.show_latex(args[2]);
+	if(argc >= 3)
+		best.show_latex(args[2]);
 
 	return 0;
 }

@@ -34,13 +34,15 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 	// TODO Randomize the weights of the vehicles
 	vector< unsigned > weights(allowed_cars.size());
 	// unsigned value = n - c;
+	unsigned value = n;
 	for(unsigned k = 0; k < allowed_cars.size() - 1; k++) {
 		weights[k] = n/allowed_cars.size();
+		value -= n/allowed_cars.size();
 		// value -= weights[k];
-		// printf("%4d", weights[k]);
+		printf("%4d", weights[k]);
 	}
-	weights[allowed_cars.size() - 1] = ceil(n/allowed_cars.size());
-	// printf("%4d\n", weights[allowed_cars.size() - 1]);
+	weights[allowed_cars.size() - 1] = value;
+	printf("%4d\n", weights[allowed_cars.size() - 1]);
 
 	// Mounting the initial tour
 	unsigned rent_place = 0;
@@ -58,7 +60,6 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 		// Raffling the car to the trip
 		unsigned chosen_i = genrand_int32() % allowed_cars.size();
 		unsigned chosen = allowed_cars[chosen_i];
-		cout << "Chosen vehicle: " << chosen << endl;
 		unsigned no_counter = 1;
 		matrix_2d distances_c = distances[chosen];
 		matrix_2d rates_c = return_rates[chosen];
@@ -190,6 +191,9 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 	result.set_route(route);
 	result.set_vehicles(vehicles);
 	result.set_cost(cost);
+	// cout << "Trying...";
+	result.find_pos();
+	// cout << "Success!" << endl;
 
 	return result;
 }

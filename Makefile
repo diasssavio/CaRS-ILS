@@ -98,11 +98,17 @@ $(TMP_ILS)/FWChrono.o: $(SRC)/FWChrono.cpp $(INCLUDE)/FWChrono.h
 $(TMP_ILS)/mt19937ar.o: $(SRC)/mt19937ar.c $(INCLUDE)/mt19937ar.h
 	$(CCC) -c $(CCFLAGS) $(SRC)/mt19937ar.c -o $(TMP_ILS)/mt19937ar.o
 
+# STRUCTURE - LOGGER
+$(TMP_ILS)/logger.o: $(SRC)/logger.cpp $(INCLUDE)/logger.h
+	$(CCC) -c $(CCFLAGS) $(SRC)/logger.cpp -o $(TMP_ILS)/logger.o
+
 # ILS
 $(TMP_ILS)/constructor.o: $(SRC)/constructor.cpp $(INCLUDE)/constructor.h
 	$(CCC) -c $(CCFLAGS) $(SRC)/constructor.cpp -o $(TMP_ILS)/constructor.o
-# $(TMP_ILS)/ils.o: $(SRC)/ils.cpp $(INCLUDE)/ils.h
-# 	$(CCC) -c $(CCFLAGS) $(SRC)/ils.cpp -o $(TMP_ILS)/ils.o
+$(TMP_ILS)/neighborhoods.o: $(SRC)/neighborhoods.cpp $(INCLUDE)/neighborhoods.h
+	$(CCC) -c $(CCFLAGS) $(SRC)/neighborhoods.cpp -o $(TMP_ILS)/neighborhoods.o
+$(TMP_ILS)/ils.o: $(SRC)/ils.cpp $(INCLUDE)/ils.h
+	$(CCC) -c $(CCFLAGS) $(SRC)/ils.cpp -o $(TMP_ILS)/ils.o
 
 # MAIN
 $(TMP_ILS)/main.o: $(SRC)/main.cpp
@@ -114,13 +120,13 @@ $(TMP_ILS)/Configuration.o: $(TMP_ILS)/FWChrono.o $(TMP_ILS)/mt19937ar.o
 	gcc -Wl,-r $(TMP_ILS)/FWChrono.o $(TMP_ILS)/mt19937ar.o -o $(TMP_ILS)/Configuration.o -nostdlib
 
 # STRUCTURE & TIMER
-$(TMP_ILS)/Structure.o:  $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o
-	gcc -Wl,-r $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o -o $(TMP_ILS)/Structure.o -nostdlib
+$(TMP_ILS)/Structure.o:  $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o $(TMP_ILS)/logger.o
+	gcc -Wl,-r $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o $(TMP_ILS)/logger.o -o $(TMP_ILS)/Structure.o -nostdlib
 	# gcc -Wl,-r $(TMP_ILS)/instance.o -o $(TMP_ILS)/Structure.o -nostdlib
 
 # ILS
-$(TMP_ILS)/ILS.o: $(TMP_ILS)/constructor.o
-	gcc -Wl,-r $(TMP_ILS)/constructor.o -o $(TMP_ILS)/ILS.o -nostdlib
+$(TMP_ILS)/ILS.o: $(TMP_ILS)/constructor.o $(TMP_ILS)/neighborhoods.o $(TMP_ILS)/ils.o
+	gcc -Wl,-r $(TMP_ILS)/constructor.o $(TMP_ILS)/neighborhoods.o $(TMP_ILS)/ils.o -o $(TMP_ILS)/ILS.o -nostdlib
 # $(TMP_ILS)/ILS.o: $(TMP_ILS)/ils.o
 # 	gcc -Wl,-r $(TMP_ILS)/ils.o -o $(TMP_ILS)/ILS.o -nostdlib
 

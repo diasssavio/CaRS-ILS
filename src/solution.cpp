@@ -8,6 +8,8 @@
 
 #include "../include/solution.h"
 
+solution::solution() { }
+
 solution::solution( instance& _cars ) { 
 	cars = _cars;
 	route = vector< unsigned >(cars.get_n());
@@ -29,6 +31,8 @@ instance& solution::get_instance() { return cars; }
 const vector< unsigned >& solution::get_route() const { return route; }
 
 const vector< t_vec >& solution::get_vehicles() const { return vehicles; }
+
+const vector< pair< unsigned, unsigned> >& solution::get_pos() const { return v_pos; }
 
 double solution::get_cost() { return cost; }
 
@@ -59,6 +63,19 @@ void solution::show_data() {
 	for(unsigned i = 0; i < cars.get_n(); i++)
 		printf("%4d", route[i]);
 	printf("\nCOST: %.2lf\n", cost);
+}
+
+void solution::find_pos() {
+	v_pos = vector< pair< unsigned, unsigned > >(vehicles.size());
+	unsigned k = 0;
+	unsigned begin = 0;
+	for(unsigned i = 0; i < cars.get_n(); i++)
+		if(route[begin] == vehicles[k].begin && route[i + 1] == vehicles[k].end) {
+			v_pos[k] = make_pair(begin, i + 1);
+			k++;
+			begin = i + 1;
+		}
+	// v_pos[k] = make_pair(begin, 0);
 }
 
 void solution::show_latex( char* filename ) {

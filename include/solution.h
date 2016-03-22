@@ -37,12 +37,14 @@ private:
 	// Solution itself
 	vector< unsigned > route;
 	vector< t_vec > vehicles;
+	vector< pair< unsigned, unsigned> > v_pos;
 
 	// Solution cost
 	double cost;
 
 public:
 	// Constructors & destructor
+	solution();
 	solution( instance& );
 	virtual ~solution();
 
@@ -56,12 +58,14 @@ public:
 	instance& get_instance();
 	const vector< unsigned >& get_route() const;
 	const vector< t_vec >& get_vehicles() const;
+	const vector< pair< unsigned, unsigned> >& get_pos() const;
 	double get_cost();
-	double evaluate();
-
+	
 	// Useful Methods
 	void show_data();
 	void show_latex( char* );
+	double evaluate();
+	void find_pos();
 
 };
 
