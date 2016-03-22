@@ -58,6 +58,7 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 		// Raffling the car to the trip
 		unsigned chosen_i = genrand_int32() % allowed_cars.size();
 		unsigned chosen = allowed_cars[chosen_i];
+		cout << "Chosen vehicle: " << chosen << endl;
 		unsigned no_counter = 1;
 		matrix_2d distances_c = distances[chosen];
 		matrix_2d rates_c = return_rates[chosen];

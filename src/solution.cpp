@@ -52,8 +52,8 @@ double solution::evaluate() {
 void solution::show_data() {
 	unsigned k = 0;
 	for(unsigned i = 0; i < cars.get_n(); i++) {
-		if(vehicles[k].end == route[i]) k++;
 		printf("%4d", vehicles[k].number);
+		if(vehicles[k].end == route[i+1]) k++;
 	}
 	printf("\n");
 	for(unsigned i = 0; i < cars.get_n(); i++)
