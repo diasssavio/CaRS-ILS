@@ -39,14 +39,14 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 		weights[k] = n/allowed_cars.size();
 		value -= n/allowed_cars.size();
 		// value -= weights[k];
-		printf("%4d", weights[k]);
+		// printf("%4d", weights[k]);
 	}
 	weights[allowed_cars.size() - 1] = value;
-	printf("%4d\n", weights[allowed_cars.size() - 1]);
+	// printf("%4d\n", weights[allowed_cars.size() - 1]);
 
 	// Mounting the initial tour
 	unsigned rent_place = 0;
-	route.push_back(rent_place);
+	// route.push_back(rent_place);
 	vector< unsigned > CL;
 	for(unsigned i = 1; i < n; i++)
 		CL.push_back(i);
@@ -60,7 +60,6 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 		// Raffling the car to the trip
 		unsigned chosen_i = genrand_int32() % allowed_cars.size();
 		unsigned chosen = allowed_cars[chosen_i];
-		unsigned no_counter = 1;
 		matrix_2d distances_c = distances[chosen];
 		matrix_2d rates_c = return_rates[chosen];
 
@@ -99,10 +98,11 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 		// cout << "Vehicle " << aux.number << ": " << rent_place << "~>" << return_place << endl;
 
 		// Mounting the route based on chosen car
+		unsigned no_counter = 1;
 		while(CL.size() > 0) {
 			if(no_counter == weights[chosen_i]) {
 				cost += distances_c[ trip[trip.size() - 1] ][return_place];
-				trip.push_back(return_place);
+				// trip.push_back(return_place);
 				break;
 			}
 
@@ -162,7 +162,7 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 			}
 
 			// for(unsigned k = 0; k < trip.size(); k++)
-				// printf("%4d", trip[k]);
+			// 	printf("%4d", trip[k]);
 			// printf("\n");
 
 			no_counter++;
@@ -171,16 +171,18 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 
 		if(CL.size() == 0) {
 			cost += distances_c[ trip[trip.size() - 1] ][return_place];
-			trip.push_back(return_place);
+			// cout << "CL.size()=0" << endl;
+			// trip.push_back(return_place);
 		}
 
 		// Removing the used car from allowed_cars
 		allowed_cars.erase(allowed_cars.begin() + chosen_i);
+		weights.erase(weights.begin() + chosen_i);
 		rent_place = return_place;
 
 		// Adding trip from car to total route
 		vehicles.push_back(aux);
-		for(unsigned i = 1; i < trip.size(); i++) {
+		for(unsigned i = 0; i < trip.size(); i++) {
 			route.push_back(trip[i]);
 			// printf("%4d", trip[i]);
 		}
@@ -191,9 +193,7 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 	result.set_route(route);
 	result.set_vehicles(vehicles);
 	result.set_cost(cost);
-	// cout << "Trying...";
 	result.find_pos();
-	// cout << "Success!" << endl;
 
 	return result;
 }

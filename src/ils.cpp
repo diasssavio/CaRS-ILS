@@ -34,6 +34,15 @@ void ils::subsets( unsigned i, unsigned n ) {
 solution& ils::execute() {
 	constructor cons(cars, alpha);
 	solution sol(cars);
+
+	/*vector< unsigned > aux(3);
+	aux[0] = 2; aux[1] = 3; aux[2] = 4;
+	sol = cons.generate_sol(aux);
+	sol.show_data();
+	vector< pair< unsigned, unsigned> > pos = sol.get_pos();
+		for(unsigned i = 0; i < pos.size(); i++)
+			printf("%d->%d\n", pos[i].first, pos[i].second);*/
+
 	subsets(1, cars.get_c());
 	for(unsigned i = 0; i < sets.size() - 1; i++) {
 		printf("{");
@@ -44,7 +53,7 @@ solution& ils::execute() {
 		sol.show_data();
 		vector< pair< unsigned, unsigned> > pos = sol.get_pos();
 		for(unsigned i = 0; i < pos.size(); i++)
-			printf("%d %d\n", pos[i].first, pos[i].second);
+			printf("%d->%d\n", pos[i].first, pos[i].second);
 	}
 
 	best = sol;

@@ -53,9 +53,9 @@ int main(int argc, char* args[]) {
 	ils ILS(cars, max_it, alpha, logs);
 	solution best = ILS.execute();
 
-	vector< pair< unsigned, unsigned> > pos = best.get_pos();
-	for(unsigned i = 0; i < pos.size(); i++)
-		printf("%d %d\n", pos[i].first, pos[i].second);
+	// vector< pair< unsigned, unsigned> > pos = best.get_pos();
+	// for(unsigned i = 0; i < pos.size(); i++)
+	// 	printf("%d %d\n", pos[i].first, pos[i].second);
 
 	/*int max_iterations = 0.1 * n;
 	int max_r = max_iterations / 2;

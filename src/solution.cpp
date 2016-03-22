@@ -54,27 +54,32 @@ double solution::evaluate() {
 }
 
 void solution::show_data() {
+	printf("-----------------------------------\n");
+	printf("VEHICLES:\t");
 	unsigned k = 0;
 	for(unsigned i = 0; i < cars.get_n(); i++) {
-		printf("%4d", vehicles[k].number);
+		printf("%4d ", vehicles[k].number);
 		if(vehicles[k].end == route[i+1]) k++;
 	}
-	printf("\n");
+	printf("\nROUTE:\t");
 	for(unsigned i = 0; i < cars.get_n(); i++)
-		printf("%4d", route[i]);
-	printf("\nCOST: %.2lf\n", cost);
+		printf("%4d ", route[i]);
+	printf("\nCOST: %.2lf\t%.2lf\n", cost, evaluate());
+	printf("-----------------------------------\n");
 }
 
 void solution::find_pos() {
-	v_pos = vector< pair< unsigned, unsigned > >(vehicles.size());
+	// v_pos = vector< pair< unsigned, unsigned > >(vehicles.size());
 	unsigned k = 0;
 	unsigned begin = 0;
-	for(unsigned i = 0; i < cars.get_n(); i++)
+	for(unsigned i = 0; i < cars.get_n() - 1; i++)
 		if(route[begin] == vehicles[k].begin && route[i + 1] == vehicles[k].end) {
-			v_pos[k] = make_pair(begin, i + 1);
+			v_pos.push_back(make_pair(begin, i + 1));
+			// v_pos[k] = make_pair(begin, i + 1);
 			k++;
 			begin = i + 1;
 		}
+	v_pos.push_back(make_pair(begin, 0));
 	// v_pos[k] = make_pair(begin, 0);
 }
 
