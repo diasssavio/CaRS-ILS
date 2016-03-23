@@ -16,6 +16,14 @@ solution::solution( instance& _cars ) {
 	cost = numeric_limits< double >::max();
 }
 
+solution::solution( solution& _sol ) {
+	cars = _sol.get_instance();
+	route = vector< unsigned >(_sol.get_route());
+	vehicles = vector< t_vec >(_sol.get_vehicles());
+	v_pos = vector< pair< unsigned, unsigned> >(_sol.get_pos());
+	cost = _sol.get_cost();
+}
+
 solution::~solution() { }
 
 void solution::set_instance( instance& _cars ) { cars = _cars; }
@@ -79,7 +87,7 @@ void solution::find_pos() {
 			k++;
 			begin = i + 1;
 		}
-	v_pos.push_back(make_pair(begin, 0));
+	v_pos.push_back(make_pair(begin, cars.get_n()));
 	// v_pos[k] = make_pair(begin, 0);
 }
 

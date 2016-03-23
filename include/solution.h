@@ -46,6 +46,7 @@ public:
 	// Constructors & destructor
 	solution();
 	solution( instance& );
+	solution( solution& );
 	virtual ~solution();
 
 	// Setters
