@@ -32,6 +32,8 @@ void solution::set_route( const vector< unsigned >& _route ) { route = _route; }
 
 void solution::set_vehicles( const vector< t_vec >& _vehicles ) { vehicles = _vehicles; }
 
+void solution::set_pos( const vector< pair < unsigned, unsigned > >& _pos ) { v_pos = _pos; }
+
 void solution::set_cost( double _cost ) { cost = _cost; }
 
 instance& solution::get_instance() { return cars; }

@@ -34,7 +34,7 @@ public:
 	virtual ~neighborhoods();
 
 	// TSP (route) Neighborhoods
-	// Swap-exchange neighborhoods
+	// Swap-exchange neighborhoods -- inner routes
 	solution swap_one( solution& );
 	solution swap_two( solution& );
 	solution swap_three( solution& );

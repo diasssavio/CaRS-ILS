@@ -53,6 +53,7 @@ public:
 	void set_instance( instance& );
 	void set_route( const vector< unsigned >& );
 	void set_vehicles( const vector< t_vec >& );
+	void set_pos( const vector< pair < unsigned, unsigned > >& );
 	void set_cost( double );
 
 	// Getters
