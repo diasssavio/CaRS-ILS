@@ -50,6 +50,7 @@ public:
 	// Vehicles neighborhoods
 	solution exchange( solution& );
 	// TODO Adapt E&C to consider all the other nodes (except one) from its neighbors vehicles, and not just one
+	solution extend_contract( solution& );
 	solution extend_contract_one( solution& );
 
 	solution& execute( solution& );

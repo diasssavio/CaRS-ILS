@@ -53,7 +53,7 @@ solution& ils::execute() {
 			printf("%d ", --sets[i][j]);
 		printf("\b}\n");
 		sol = cons.generate_sol(sets[i]);
-		sol.show_data();
+		// sol.show_data();
 		sol = neighbors.execute(sol);
 		sol.show_data();
 		vector< pair< unsigned, unsigned> > pos = sol.get_pos();
