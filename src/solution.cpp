@@ -65,13 +65,13 @@ double solution::evaluate() {
 
 void solution::show_data() {
 	printf("-----------------------------------\n");
-	printf("VEHICLES:\t");
+	printf("VEHICLES:");
 	unsigned k = 0;
 	for(unsigned i = 0; i < cars.get_n(); i++) {
 		printf("%4d ", vehicles[k].number);
 		if(vehicles[k].end == route[i+1]) k++;
 	}
-	printf("\nROUTE:\t");
+	printf("\nROUTE:\t ");
 	for(unsigned i = 0; i < cars.get_n(); i++)
 		printf("%4d ", route[i]);
 	printf("\nCOST: %.2lf\t%.2lf\n", cost, evaluate());

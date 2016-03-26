@@ -124,7 +124,7 @@ solution neighborhoods::shift_one( solution& p_sol ) {
 
 	solution current = p_sol;
 
-	// Evaluating all possible swaps
+	// Evaluating all possible shifts
 	for(unsigned k = 0; k < vehicles.size(); k++)
 		for(unsigned i = v_pos[k].first + 1; i < v_pos[k].second; i++)
 			for(unsigned j = v_pos[k].first + 1; j < v_pos[k].second; j++) {
@@ -147,8 +147,6 @@ solution neighborhoods::shift_one( solution& p_sol ) {
 				cost += distances[ vehicles[k].number ][ route[j] ][ route[i] ];
 				cost += distances[ vehicles[k].number ][ route[i] ][ route[aux2] ];
 				cost += distances[ vehicles[k].number ][ route[i - 1] ][ route[aux1] ];
-				// if(i == (j - 1))
-					// cost += distances[ vehicles[k].number ][ route[i - 1] ][ route[j] ];
 
 				// If the cost is smaller than the current, the change is applied
 				if(cost < current.get_cost()) {
@@ -180,17 +178,123 @@ solution neighborhoods::shift_three( solution& p_sol ) {
 	// TODO
 }
 
+solution neighborhoods::extend_contract_one( solution& p_sol ) {
+	unsigned n = cars.get_n();
+	vector< t_vec > vehicles = p_sol.get_vehicles();
+	vector< matrix_2d > distances = cars.get_distances();
+	vector< matrix_2d > rates = cars.get_return_rates();
+
+	if(vehicles.size() <= 1) return p_sol;
+
+	vector< unsigned > route = p_sol.get_route();
+
+	solution current = p_sol;
+
+	// Evaluating all possible extensions
+	for(unsigned k = 0; k < vehicles.size(); k++) {
+		// If is the last vehicle, it is not possible to change its return place
+		if(k < vehicles.size() - 1) {
+			vector< pair< unsigned, unsigned> > v_pos(p_sol.get_pos());
+			// The next vehicle must have more than just one edge
+			if((v_pos[k + 1].second - v_pos[k + 1].first) > 1) {
+
+				// Aux variable to calculate the return rate of the last vertex
+				unsigned aux = v_pos[k + 1].second;
+				if(aux == n) aux = 0;
+
+				double cost = p_sol.get_cost();
+				cost -= distances[ vehicles[k + 1].number ][ route[ v_pos[k + 1].first ] ][ route[ v_pos[k + 1].first + 1 ] ];
+				cost -= rates[ vehicles[k + 1].number ][ route[ v_pos[k + 1].first ] ][ route[ aux ] ];
+				cost -= rates[ vehicles[k].number ][ route[ v_pos[k].first ] ][ route[ v_pos[k].second ] ];
+				cost += distances[ vehicles[k].number ][ route[ v_pos[k + 1].first ] ][ route[ v_pos[k + 1].first + 1 ] ];
+				cost += rates[ vehicles[k + 1].number ][ route[ v_pos[k + 1].first + 1 ] ][ route[ aux ] ];
+				cost += rates[ vehicles[k].number ][ route[ v_pos[k].first ] ][ route[ v_pos[k].second + 1 ] ];
+
+				// If the cost is smaller than the current, the change is applied
+				if(cost < current.get_cost()) {
+					v_pos[k].second++;
+					v_pos[k + 1].first++;
+					vector< t_vec > veh(vehicles);
+					veh[k].end = route[ v_pos[k].second ];
+					veh[k + 1].begin = route[ v_pos[k + 1].first ];
+
+					solution neighbor(cars);
+					neighbor.set_route(route);
+					neighbor.set_vehicles(veh);
+					neighbor.set_pos(v_pos);
+					neighbor.set_cost(cost);
+					cout << "Vehicle " << vehicles[k].number << cost << " - " << neighbor.evaluate() << endl;
+					current = neighbor;
+				}
+			}
+		}
+
+		// If is the first vehicle, it is not possible to change its rent place
+		if(k > 0) {
+			vector< pair< unsigned, unsigned> > v_pos(p_sol.get_pos());
+			// The previous vehicle must have more than just one edge
+			if((v_pos[k - 1].second - v_pos[k - 1].first) > 1) {
+
+				// Aux variable to calculate the return rate of the last vertex
+				unsigned aux = aux;
+				if(aux == n) aux = 0;
+
+				double cost = p_sol.get_cost();
+				cost -= distances[ vehicles[k - 1].number ][ route[ v_pos[k].first - 1 ] ][ route[ v_pos[k].first ] ];
+				cost -= rates[ vehicles[k - 1].number ][ route[ v_pos[k - 1].first ] ][ route[ v_pos[k - 1].second ] ];
+				cost -= rates[ vehicles[k].number ][ route[ v_pos[k].first ] ][ route[ aux ] ];
+				cost += distances[ vehicles[k].number ][ route[ v_pos[k].first - 1 ] ][ route[ v_pos[k].first ] ];
+				cost += rates[ vehicles[k - 1].number ][ route[ v_pos[k - 1].first ] ][ route[ v_pos[k - 1].second - 1 ] ];
+				cost += rates[ vehicles[k].number ][ route[ v_pos[k].first - 1 ] ][ route[ aux ] ];
+
+				// If the cost is smaller than the current, the change is applied
+				if(cost < current.get_cost()) {
+					v_pos[k].first--;
+					v_pos[k - 1].second--;
+					vector< t_vec > veh(vehicles);
+					veh[k].begin = route[ v_pos[k].first ];
+					veh[k - 1].end = route[ v_pos[k - 1].second ];
+
+					solution neighbor(cars);
+					neighbor.set_route(route);
+					neighbor.set_vehicles(veh);
+					neighbor.set_pos(v_pos);
+					neighbor.set_cost(cost);
+					cout << "Vehicle " << vehicles[k].number << cost << " - " << neighbor.evaluate() << endl;
+					current = neighbor;
+				}
+			}
+		}
+
+	}
+
+	return current;
+}
+
 solution& neighborhoods::execute( solution& p_sol ) {
 	bool is_improved = true;
 	best = p_sol;
 	solution current = p_sol;
 	while(is_improved) {
-		// current = swap_one(current);
-		// current = two_opt(current);
 		current = shift_one(current);
 		if(current.get_cost() < best.get_cost())
 			best = current;
-		else is_improved = false;
+		else {
+			current.show_data();
+			current = extend_contract_one(current);
+			if(current.get_cost() < best.get_cost())
+				best = current;
+			else is_improved = false;
+			// current = two_opt(current);
+			// if(current.get_cost() < best.get_cost())
+			// 	best = current;
+			// else {
+			// 	current = swap_one(current);
+			// 	if(current.get_cost() < best.get_cost())
+			// 		best = current;
+			// 	else is_improved = false;
+			// }
+		}
 	}
 
 	return best;
