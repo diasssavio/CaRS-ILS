@@ -52,13 +52,15 @@ solution& ils::execute() {
 		for(unsigned j = 0; j < sets[i].size(); j++)
 			printf("%d ", --sets[i][j]);
 		printf("\b}\n");
-		sol = cons.generate_sol(sets[i]);
-		// sol.show_data();
-		sol = neighbors.execute(sol);
-		sol.show_data();
-		vector< pair< unsigned, unsigned> > pos = sol.get_pos();
-		for(unsigned i = 0; i < pos.size(); i++)
-			printf("%d->%d\n", pos[i].first, pos[i].second);
+		if(sets[i].size() >= 2) {
+			sol = cons.generate_sol(sets[i]);
+			// sol.show_data();
+			sol = neighbors.execute(sol);
+			sol.show_data();
+			vector< pair< unsigned, unsigned> > pos = sol.get_pos();
+			for(unsigned i = 0; i < pos.size(); i++)
+				printf("%d->%d\n", pos[i].first, pos[i].second);
+		}
 	}
 
 	best = sol;

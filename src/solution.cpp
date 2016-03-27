@@ -132,3 +132,5 @@ void solution::show_latex( char* filename ) {
 		_result << "\\end{tikzpicture}" << endl << "\\end{document}";
 	}
 }
+
+unsigned solution::get_trip_size( unsigned c_index ) { return v_pos[c_index].second - v_pos[c_index].first; }

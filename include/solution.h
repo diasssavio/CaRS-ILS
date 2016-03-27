@@ -68,6 +68,7 @@ public:
 	void show_latex( char* );
 	double evaluate();
 	void find_pos();
+	unsigned get_trip_size( unsigned );
 
 };
 
