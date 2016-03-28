@@ -53,9 +53,6 @@ public:
 	solution o_swap_two( solution& );
 	solution o_swap_three( solution& );
 
-	// K-opt neighborhoods
-	solution o_two_opt( solution& );
-
 	// Or-Opt (Shift) neighborhoods
 	solution o_shift_one( solution& );
 	solution o_shift_two( solution& );
