@@ -18,15 +18,14 @@ solution neighborhoods::i_swap_one( solution& p_sol ) {
 	vector< matrix_2d > distances = cars.get_distances();
 
 	vector< pair< unsigned, unsigned> > v_pos = p_sol.get_pos();
-
-	solution current = p_sol;
+	vector< unsigned > route(p_sol.get_route());
 
 	// Evaluating all possible swaps
+	unsigned i_swap = 0, j_swap = 0;
+	double current_cost = p_sol.get_cost();
 	for(unsigned k = 0; k < vehicles.size(); k++)
 		for(unsigned i = v_pos[k].first + 1; i < v_pos[k].second - 1; i++)
 			for(unsigned j = i + 1; j < v_pos[k].second; j++) {
-				vector< unsigned > route(p_sol.get_route());
-
 				// Aux variable to calculate the last edge of the cicle
 				unsigned aux = j + 1;
 				if(j == (n - 1)) aux = 0;
@@ -51,19 +50,25 @@ solution neighborhoods::i_swap_one( solution& p_sol ) {
 
 				// If the cost is smaller than the current, the change is applied
 				// cout << cost << " - " << neighbor.evaluate() << " = " << cost - neighbor.evaluate() << endl;
-				if(cost < current.get_cost()) {
-					swap(route[i], route[j]);
-					solution neighbor(cars);
-					neighbor.set_route(route);
-					neighbor.set_vehicles(p_sol.get_vehicles());
-					neighbor.set_pos(p_sol.get_pos());
-					neighbor.set_cost(cost);
-					current = neighbor;
+				if(cost < current_cost) {
+					i_swap = i;
+					j_swap = j;
+					current_cost = cost;
 				}
 				// cout << "... executed!" << endl;
 			}
 
-	return current;
+	if(i_swap != j_swap) {
+		swap(route[i_swap], route[j_swap]);
+		solution neighbor(cars);
+		neighbor.set_route(route);
+		neighbor.set_vehicles(p_sol.get_vehicles());
+		neighbor.set_pos(p_sol.get_pos());
+		neighbor.set_cost(current_cost);
+		return neighbor;
+	}
+
+	return p_sol;
 }
 
 solution neighborhoods::i_swap_two( solution& p_sol ) {
@@ -80,15 +85,14 @@ solution neighborhoods::i_two_opt( solution& p_sol ) {
 	vector< matrix_2d > distances = cars.get_distances();
 
 	vector< pair< unsigned, unsigned> > v_pos = p_sol.get_pos();
-
-	solution current = p_sol;
+	vector< unsigned > route(p_sol.get_route());
 
 	// Evaluating all possible swaps
+	unsigned i_opt = 0, j_opt = 0;
+	double current_cost = p_sol.get_cost();
 	for(unsigned k = 0; k < vehicles.size(); k++)
 		for(unsigned i = v_pos[k].first + 1; i < v_pos[k].second - 1; i++)
 			for(unsigned j = i + 3; j < v_pos[k].second; j++) {
-				vector< unsigned > route(p_sol.get_route());
-
 				// Aux variable to calculate the last edge of the cicle
 				unsigned aux = j + 1;
 				if(j == (n - 1)) aux = 0;
@@ -101,18 +105,24 @@ solution neighborhoods::i_two_opt( solution& p_sol ) {
 				cost += distances[ vehicles[k].number ][ route[i] ][ route[aux] ];
 
 				// If the cost is smaller than the current, the change is applied
-				if(cost < current.get_cost()) {
-					reverse(route.begin() + i, route.begin() + (j + 1));
-					solution neighbor(cars);
-					neighbor.set_route(route);
-					neighbor.set_vehicles(p_sol.get_vehicles());
-					neighbor.set_pos(p_sol.get_pos());
-					neighbor.set_cost(cost);
-					current = neighbor;
+				if(cost < current_cost) {
+					i_opt = i;
+					j_opt = j + 1;
+					current_cost = cost;
 				}
 			}
 
-	return current;
+	if(i_opt != j_opt) {
+		reverse(route.begin() + i_opt, route.begin() + j_opt);
+		solution neighbor(cars);
+		neighbor.set_route(route);
+		neighbor.set_vehicles(p_sol.get_vehicles());
+		neighbor.set_pos(p_sol.get_pos());
+		neighbor.set_cost(current_cost);
+		return neighbor;
+	}
+
+	return p_sol;
 }
 
 solution neighborhoods::i_shift_one( solution& p_sol ) {
@@ -121,17 +131,19 @@ solution neighborhoods::i_shift_one( solution& p_sol ) {
 	vector< matrix_2d > distances = cars.get_distances();
 
 	vector< pair< unsigned, unsigned> > v_pos = p_sol.get_pos();
+	vector< unsigned > route(p_sol.get_route());
 
 	solution current = p_sol;
 
 	// Evaluating all possible shifts
+	unsigned i_shift = 0, j_shift = 0;
+	double current_cost = p_sol.get_cost();
 	for(unsigned k = 0; k < vehicles.size(); k++)
 		for(unsigned i = v_pos[k].first + 1; i < v_pos[k].second; i++)
 			for(unsigned j = v_pos[k].first + 1; j < v_pos[k].second; j++) {
 				// If i == j + 1 means that I'll try to insert i in its same position as before
 				if(i == j || i == (j + 1)) continue;
 
-				vector< unsigned > route(p_sol.get_route());
 
 				// Aux variable to calculate the last edge of the cicle
 				unsigned aux1 = i + 1;
@@ -149,23 +161,29 @@ solution neighborhoods::i_shift_one( solution& p_sol ) {
 				cost += distances[ vehicles[k].number ][ route[i - 1] ][ route[aux1] ];
 
 				// If the cost is smaller than the current, the change is applied
-				if(cost < current.get_cost()) {
-					unsigned value = route[i];
-					if(i > j) {
-						route.erase(route.begin() + i);
-						route.insert(route.begin() + (j + 1), value);
-					} else {
-						route.insert(route.begin() + (j + 1), value);
-						route.erase(route.begin() + i);
-					}
-					solution neighbor(cars);
-					neighbor.set_route(route);
-					neighbor.set_vehicles(p_sol.get_vehicles());
-					neighbor.set_pos(p_sol.get_pos());
-					neighbor.set_cost(cost);
-					current = neighbor;
+				if(cost < current_cost) {
+					i_shift = i;
+					j_shift = j;
+					current_cost = cost;
 				}
 			}
+
+	if(i_shift != j_shift) {
+		unsigned value = route[i_shift];
+		if(i_shift > j_shift) {
+			route.erase(route.begin() + i_shift);
+			route.insert(route.begin() + (j_shift + 1), value);
+		} else {
+			route.insert(route.begin() + (j_shift + 1), value);
+			route.erase(route.begin() + i_shift);
+		}
+		solution neighbor(cars);
+		neighbor.set_route(route);
+		neighbor.set_vehicles(p_sol.get_vehicles());
+		neighbor.set_pos(p_sol.get_pos());
+		neighbor.set_cost(current_cost);
+		return neighbor;
+	}
 
 	return current;
 }
