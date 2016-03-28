@@ -3,7 +3,7 @@
 // Author      : Sávio S. Dias
 // E-mail      : diasssavio@gmail.com
 // Institution : Universidade Federal Fluminense
-// Description : 
+// Description : Iterated Local Search class interface
 //============================================================================
 
 #ifndef ILS_H_

@@ -3,7 +3,7 @@
 // Author      : Sávio S. Dias
 // E-mail      : diasssavio@gmail.com
 // Institution : Universidade Federal Fluminense
-// Description : 
+// Description : Neighborhoods class interface
 //============================================================================
 
 #ifndef NEIGHBORHOODS_H_
@@ -33,23 +33,36 @@ public:
 	neighborhoods( instance& );
 	virtual ~neighborhoods();
 
-	// TSP (route) Neighborhoods
-	// Swap-exchange neighborhoods -- inner routes
-	solution swap_one( solution& );
-	solution swap_two( solution& );
-	solution swap_three( solution& );
+	// TSP (route) Neighborhoods -- INNER ROUTES
+	// Swap-exchange neighborhoods
+	solution i_swap_one( solution& );
+	solution i_swap_two( solution& );
+	solution i_swap_three( solution& );
 
 	// K-opt neighborhoods
-	solution two_opt( solution& );
+	solution i_two_opt( solution& );
 
 	// Or-Opt (Shift) neighborhoods
-	solution shift_one( solution& );
-	solution shift_two( solution& );
-	solution shift_three( solution& );
+	solution i_shift_one( solution& );
+	solution i_shift_two( solution& );
+	solution i_shift_three( solution& );
+
+	// TSP (route) Neighborhoods -- OUTTER ROUTES
+	// Swap-exchange neighborhoods
+	solution o_swap_one( solution& );
+	solution o_swap_two( solution& );
+	solution o_swap_three( solution& );
+
+	// K-opt neighborhoods
+	solution o_two_opt( solution& );
+
+	// Or-Opt (Shift) neighborhoods
+	solution o_shift_one( solution& );
+	solution o_shift_two( solution& );
+	solution o_shift_three( solution& );
 
 	// Vehicles neighborhoods
 	solution exchange( solution& );
-	// TODO Adapt E&C to consider all the other nodes (except one) from its neighbors vehicles, and not just one
 	solution extend_contract( solution& );
 	solution extend_contract_one( solution& );
 

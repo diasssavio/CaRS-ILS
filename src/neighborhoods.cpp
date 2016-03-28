@@ -3,7 +3,7 @@
 // Author      : Sávio S. Dias
 // E-mail      : diasssavio@gmail.com
 // Institution : Universidade Federal Fluminense
-// Description : 
+// Description : Neighborhoods class implementation
 //============================================================================
 
 #include "../include/neighborhoods.h"
@@ -12,7 +12,7 @@ neighborhoods::neighborhoods( instance& _cars ) { this->cars = _cars; }
 
 neighborhoods::~neighborhoods() { }
 
-solution neighborhoods::swap_one( solution& p_sol ) {
+solution neighborhoods::i_swap_one( solution& p_sol ) {
 	unsigned n = cars.get_n();
 	vector< t_vec > vehicles = p_sol.get_vehicles();
 	vector< matrix_2d > distances = cars.get_distances();
@@ -66,15 +66,15 @@ solution neighborhoods::swap_one( solution& p_sol ) {
 	return current;
 }
 
-solution neighborhoods::swap_two( solution& p_sol ) {
+solution neighborhoods::i_swap_two( solution& p_sol ) {
 	// TODO
 }
 
-solution neighborhoods::swap_three( solution& p_sol ) {
+solution neighborhoods::i_swap_three( solution& p_sol ) {
 	// TODO
 }
 
-solution neighborhoods::two_opt( solution& p_sol ) {
+solution neighborhoods::i_two_opt( solution& p_sol ) {
 	unsigned n = cars.get_n();
 	vector< t_vec > vehicles = p_sol.get_vehicles();
 	vector< matrix_2d > distances = cars.get_distances();
@@ -115,7 +115,7 @@ solution neighborhoods::two_opt( solution& p_sol ) {
 	return current;
 }
 
-solution neighborhoods::shift_one( solution& p_sol ) {
+solution neighborhoods::i_shift_one( solution& p_sol ) {
 	unsigned n = cars.get_n();
 	vector< t_vec > vehicles = p_sol.get_vehicles();
 	vector< matrix_2d > distances = cars.get_distances();
@@ -170,11 +170,39 @@ solution neighborhoods::shift_one( solution& p_sol ) {
 	return current;
 }
 
-solution neighborhoods::shift_two( solution& p_sol ) {
+solution neighborhoods::i_shift_two( solution& p_sol ) {
 	// TODO
 }
 
-solution neighborhoods::shift_three( solution& p_sol ) {
+solution neighborhoods::i_shift_three( solution& p_sol ) {
+	// TODO
+}
+
+solution neighborhoods::o_swap_one( solution& ) {
+	// TODO
+}
+
+solution neighborhoods::o_swap_two( solution& ) {
+	// TODO
+}
+
+solution neighborhoods::o_swap_three( solution& ) {
+	// TODO
+}
+
+solution neighborhoods::o_two_opt( solution& ) {
+	// TODO
+}
+
+solution neighborhoods::o_shift_one( solution& ) {
+	// TODO
+}
+
+solution neighborhoods::o_shift_two( solution& ) {
+	// TODO
+}
+
+solution neighborhoods::o_shift_three( solution& ) {
 	// TODO
 }
 
@@ -385,7 +413,7 @@ solution& neighborhoods::execute( solution& p_sol ) {
 		if(current.get_cost() < best.get_cost())
 			best = current;
 		else {
-			current = shift_one(current);
+			current = i_shift_one(current);
 			if(current.get_cost() < best.get_cost())
 				best = current;
 			else is_improved = false;
