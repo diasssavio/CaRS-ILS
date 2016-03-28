@@ -78,7 +78,7 @@ clean:
 	/bin/rm -rf $(CPP_EX)
 	/bin/rm -rf ./tmp
 	/bin/rm -rf ./dat
-	/bin/rm -rf plot.tex
+	/bin/rm -rf *.tex
 
 
 ########################## GENERATING OBJECT's ######################################################

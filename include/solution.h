@@ -65,7 +65,7 @@ public:
 	
 	// Useful Methods
 	void show_data();
-	void show_latex( char* );
+	void show_latex( char*, char* );
 	double evaluate();
 	void find_pos();
 	unsigned get_trip_size( unsigned );

@@ -93,12 +93,12 @@ void solution::find_pos() {
 	// v_pos[k] = make_pair(begin, 0);
 }
 
-void solution::show_latex( char* filename ) {
+void solution::show_latex( char* filename, char* out_file ) {
 	ifstream _file;
 	_file.open(filename);
 	if(_file.is_open()) {
 		ofstream _result;
-		_result.open("plot.tex", ios::out);
+		_result.open(out_file, ios::out);
 		if(!_result) return;
 		_result << "\\documentclass{standalone}" << endl << "\\usepackage{tikz}" << endl << "\\usetikzlibrary{positioning}" << endl
 					 << "\\begin{document}" << endl << "\\begin{tikzpicture}[scale=0.1, every node/.style={scale=0.5,line width=0.5pt}]" << endl;

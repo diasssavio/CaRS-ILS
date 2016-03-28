@@ -85,7 +85,7 @@ int main(int argc, char* args[]) {
 	// cout << "," << seed << endl;*/
 
 	if(argc >= 3)
-		best.show_latex(args[2]);
+		best.show_latex(args[2], "plot.tex");
 
 	return 0;
 }
