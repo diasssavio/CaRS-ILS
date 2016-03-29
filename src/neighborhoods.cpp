@@ -116,7 +116,7 @@ solution neighborhoods::i_swap_two( solution& p_sol ) {
 			}
 
 	if(i_swap != j_swap) {
-		cout << "Applying swap_2" << endl;
+		// cout << "Applying swap_2" << endl;
 		swap(route[i_swap], route[j_swap]);
 		swap(route[i_swap + 1], route[j_swap + 1]);
 		solution neighbor(cars);
@@ -241,7 +241,68 @@ solution neighborhoods::i_shift_one( solution& p_sol ) {
 }
 
 solution neighborhoods::i_shift_two( solution& p_sol ) {
-	// TODO
+	unsigned n = cars.get_n();
+	vector< t_vec > vehicles = p_sol.get_vehicles();
+	vector< matrix_2d > distances = cars.get_distances();
+
+	vector< pair< unsigned, unsigned> > v_pos(p_sol.get_pos());
+	vector< unsigned > route(p_sol.get_route());
+
+	// Evaluating all possible shifts
+	unsigned i_shift = 0, j_shift = 0;
+	double current_cost = p_sol.get_cost();
+	for(unsigned k = 0; k < vehicles.size(); k++)
+		for(unsigned i = v_pos[k].first + 1; i < v_pos[k].second - 1; i++)
+			for(unsigned j = v_pos[k].first; j < v_pos[k].second; j++) {
+				// If i == j + 1 means that I'll try to insert i in its same position as before
+				if(i == j || i == (j + 1) || i == (j - 1)) continue;
+
+				// Aux variable to calculate the last edge of the cycle
+				unsigned aux1 = i + 2;
+				if(i == (n - 2)) aux1 = 0;
+				unsigned aux2 = j + 1;
+				if(j == (n - 1)) aux2 = 0;
+
+				// Calculating the current cost for the or-opt-1 change
+				double cost = p_sol.get_cost();
+				cost -= distances[ vehicles[k].number ][ route[i - 1] ][ route[i] ];
+				cost -= distances[ vehicles[k].number ][ route[i + 1] ][ route[aux1] ];
+				cost -= distances[ vehicles[k].number ][ route[j] ][ route[aux2] ];
+				cost += distances[ vehicles[k].number ][ route[j] ][ route[i] ];
+				cost += distances[ vehicles[k].number ][ route[i + 1] ][ route[aux2] ];
+				cost += distances[ vehicles[k].number ][ route[i - 1] ][ route[aux1] ];
+
+				// If the cost is smaller than the current, the change is applied
+				if(cost < current_cost) {
+					i_shift = i;
+					j_shift = j;
+					current_cost = cost;
+				}
+			}
+
+	if(i_shift != j_shift) {
+		// cout << "Applying shift_2" << endl;
+		unsigned value1 = route[i_shift], value2 = route[i_shift + 1];
+		if(i_shift > j_shift) {
+			route.erase(route.begin() + i_shift);
+			route.erase(route.begin() + i_shift);
+			route.insert(route.begin() + (j_shift + 1), value2);
+			route.insert(route.begin() + (j_shift + 1), value1);
+		} else {
+			route.insert(route.begin() + (j_shift + 1), value2);
+			route.insert(route.begin() + (j_shift + 1), value1);
+			route.erase(route.begin() + i_shift);
+			route.erase(route.begin() + i_shift);
+		}
+		solution neighbor(cars);
+		neighbor.set_route(route);
+		neighbor.set_vehicles(vehicles);
+		neighbor.set_pos(v_pos);
+		neighbor.set_cost(current_cost);
+		return neighbor;
+	}
+
+	return p_sol;
 }
 
 solution neighborhoods::i_shift_three( solution& p_sol ) {
@@ -604,7 +665,8 @@ solution& neighborhoods::execute( solution& p_sol ) {
 			best = current;
 		else {
 			// current = o_shift_one(current);
-			current = i_swap_two(current);
+			// current = i_swap_two(current);
+			current = i_shift_two(current);
 			// current = i_swap_one(current);
 			// current = o_swap_one(current);
 			if(current.get_cost() < best.get_cost())
