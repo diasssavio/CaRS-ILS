@@ -362,11 +362,66 @@ solution neighborhoods::o_swap_one( solution& p_sol ) {
 	return p_sol;
 }
 
-solution neighborhoods::o_swap_two( solution& ) {
-	// TODO
+solution neighborhoods::o_swap_two( solution& p_sol ) {
+	unsigned n = cars.get_n();
+	vector< t_vec > vehicles = p_sol.get_vehicles();
+	vector< matrix_2d > distances = cars.get_distances();
+
+	vector< pair< unsigned, unsigned> > v_pos = p_sol.get_pos();
+	vector< unsigned > route(p_sol.get_route());
+
+	// Evaluating all possible swaps
+	unsigned i_swap = 0, j_swap = 0;
+	double current_cost = p_sol.get_cost();
+	for(unsigned k = 0; k < vehicles.size() - 1; k++)
+		for(unsigned i = v_pos[k].first + 1; i < v_pos[k].second - 1; i++)
+			for(unsigned l = k + 1; l < vehicles.size(); l++)
+				for(unsigned j = v_pos[l].first + 1; j < v_pos[l].second - 1; j++) {
+					// Aux variable to calculate the last edge of the cycle
+					unsigned aux = j + 2;
+					if(j == (n - 2)) aux = 0;
+
+					// Calculating the current cost for the swap change
+					double cost = p_sol.get_cost();
+					cost += distances[ vehicles[k].number ][ route[i - 1] ][ route[j] ];
+					cost += distances[ vehicles[l].number ][ route[j - 1] ][ route[i] ];
+					cost += distances[ vehicles[k].number ][ route[j + 1] ][ route[i + 2] ];
+					cost += distances[ vehicles[l].number ][ route[i + 1] ][ route[aux] ];
+					cost += distances[ vehicles[l].number ][ route[i] ][ route[i + 1] ];
+					cost += distances[ vehicles[k].number ][ route[j] ][ route[j + 1] ];
+					cost -= distances[ vehicles[k].number ][ route[i - 1] ][ route[i] ];
+					cost -= distances[ vehicles[l].number ][ route[j - 1] ][ route[j] ];
+					cost -= distances[ vehicles[k].number ][ route[i + 1] ][ route[i + 2] ];
+					cost -= distances[ vehicles[l].number ][ route[j + 1] ][ route[aux] ];
+					cost -= distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
+					cost -= distances[ vehicles[l].number ][ route[j] ][ route[j + 1] ];
+
+					// If the cost is smaller than the current, the change is applied
+					// cout << cost << " - " << neighbor.evaluate() << " = " << cost - neighbor.evaluate() << endl;
+					if(cost < current_cost) {
+						i_swap = i;
+						j_swap = j;
+						current_cost = cost;
+					}
+					// cout << "... executed!" << endl;
+				}
+
+	if(i_swap != j_swap) {
+		cout << "Applying o_swap_2" << endl;
+		swap(route[i_swap], route[j_swap]);
+		swap(route[i_swap + 1], route[j_swap + 1]);
+		solution neighbor(cars);
+		neighbor.set_route(route);
+		neighbor.set_vehicles(vehicles);
+		neighbor.set_pos(v_pos);
+		neighbor.set_cost(current_cost);
+		return neighbor;
+	}
+
+	return p_sol;
 }
 
-solution neighborhoods::o_swap_three( solution& ) {
+solution neighborhoods::o_swap_three( solution& p_sol ) {
 	// TODO
 }
 
@@ -449,11 +504,11 @@ solution neighborhoods::o_shift_one( solution& p_sol ) {
 	return p_sol;
 }
 
-solution neighborhoods::o_shift_two( solution& ) {
+solution neighborhoods::o_shift_two( solution& p_sol ) {
 	// TODO
 }
 
-solution neighborhoods::o_shift_three( solution& ) {
+solution neighborhoods::o_shift_three( solution& p_sol ) {
 	// TODO
 }
 
@@ -664,11 +719,12 @@ solution& neighborhoods::execute( solution& p_sol ) {
 		if(current.get_cost() < best.get_cost())
 			best = current;
 		else {
-			// current = o_shift_one(current);
 			// current = i_swap_two(current);
-			current = i_shift_two(current);
+			// current = i_shift_two(current);
 			// current = i_swap_one(current);
+			// current = o_shift_one(current);
 			// current = o_swap_one(current);
+			current = o_swap_two(current);
 			if(current.get_cost() < best.get_cost())
 				best = current;
 			else is_improved = false;
