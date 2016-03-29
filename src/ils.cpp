@@ -42,7 +42,7 @@ solution& ils::execute() {
 		for(unsigned j = 0; j < sets[i].size(); j++)
 			printf("%d ", --sets[i][j]);
 		printf("\b}\n");
-		if(sets[i].size() >= 2) {
+		if(sets[i].size() >= 1) {
 			sol = cons.generate_sol(sets[i]);
 			// sol.show_data();
 			sol = neighbors.execute(sol);
