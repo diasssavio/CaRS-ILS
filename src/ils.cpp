@@ -44,6 +44,7 @@ solution& ils::execute() {
 		printf("\b}\n");
 		if(sets[i].size() >= 1) {
 			sol = cons.generate_sol(sets[i]);
+			sol.show_latex("BrasilCO40e.coo", "cons.tex");
 			// sol.show_data();
 			sol = neighbors.execute(sol);
 			sol.show_data();
