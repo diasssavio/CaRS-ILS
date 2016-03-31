@@ -42,7 +42,7 @@ solution& ils::execute() {
 		for(unsigned j = 0; j < sets[i].size(); j++)
 			printf("%d ", --sets[i][j]);
 		printf("\b}\n");
-		if(sets[i].size() >= 1) {
+		if(sets[i].size() >= 2) {
 			sol = cons.generate_sol(sets[i]);
 			sol.show_latex("BrasilCO40e.coo", "cons.tex");
 			// sol.show_data();
