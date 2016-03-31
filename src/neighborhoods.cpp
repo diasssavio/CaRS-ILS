@@ -840,6 +840,71 @@ solution neighborhoods::o_shift_three( solution& p_sol ) {
 	return p_sol;
 }
 
+solution neighborhoods::exchange( solution& p_sol ) {
+	unsigned n = cars.get_n();
+	vector< t_vec > vehicles(p_sol.get_vehicles());
+	vector< pair< unsigned, unsigned> > v_pos(p_sol.get_pos());
+	vector< matrix_2d > distances = cars.get_distances();
+	vector< matrix_2d > rates = cars.get_return_rates();
+
+	if(vehicles.size() <= 1) return p_sol;
+
+	vector< unsigned > route = p_sol.get_route();
+
+	// Evaluating all possible exchanges
+	unsigned k_swap = 0, l_swap = 0;
+	double current_cost = p_sol.get_cost();
+	for(unsigned k = 0; k < vehicles.size() - 1; k++)
+		for(unsigned l = k + 1; l < vehicles.size(); l++) {
+			// Aux variable to calculate the last edge of the cycle
+			unsigned aux = v_pos[l].second;
+			if(aux == n) aux = 0;
+
+			double cost = p_sol.get_cost();
+
+			// Removing the edges & fees from the previous vehicles
+			cost -= rates[ vehicles[k].number ][ route [ v_pos[k].first ] ][ route[ v_pos[k].second ] ];
+			cost -= rates[ vehicles[l].number ][ route [ v_pos[l].first ] ][ route[aux] ];
+			for(unsigned i = v_pos[k].first; i < v_pos[k].second; i++)
+				cost -= distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
+			for(unsigned i = v_pos[l].first; i < v_pos[l].second - 1; i++)
+				cost -= distances[ vehicles[l].number ][ route[i] ][ route[i + 1] ];
+			cost -= distances[ vehicles[l].number ][ route[ v_pos[l].second - 1 ] ][ route[aux] ];
+
+			// Adding the edges from the possible exchange in vehicles
+			cost += rates[ vehicles[l].number ][ route [ v_pos[k].first ] ][ route[ v_pos[k].second ] ];
+			cost += rates[ vehicles[k].number ][ route [ v_pos[l].first ] ][ route[aux] ];
+			for(unsigned i = v_pos[k].first; i < v_pos[k].second; i++)
+				cost += distances[ vehicles[l].number ][ route[i] ][ route[i + 1] ];
+			for(unsigned i = v_pos[l].first; i < v_pos[l].second - 1; i++)
+				cost += distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
+			cost += distances[ vehicles[k].number ][ route[ v_pos[l].second - 1 ] ][ route[aux] ];
+
+			// If the cost is smaller than the current, the change is applied
+			if(cost < current_cost) {
+				k_swap = k;
+				l_swap = l;
+				current_cost = cost;
+			}
+		}
+
+	if(k_swap != l_swap) {
+		cout << "Applying exchange" << endl;
+		unsigned aux = vehicles[k_swap].number;
+		vehicles[k_swap].number = vehicles[l_swap].number;
+		vehicles[l_swap].number = aux;
+
+		solution neighbor(cars);
+		neighbor.set_route(route);
+		neighbor.set_vehicles(vehicles);
+		neighbor.set_pos(v_pos);
+		neighbor.set_cost(current_cost);
+		return neighbor;
+	}
+
+	return p_sol;
+}
+
 solution neighborhoods::extend_contract( solution& p_sol ) {
 	unsigned n = cars.get_n();
 	vector< t_vec > vehicles = p_sol.get_vehicles();
@@ -1043,7 +1108,8 @@ solution& neighborhoods::execute( solution& p_sol ) {
 	solution current = p_sol;
 	while(is_improved) {
 		current.show_data();
-		current = extend_contract(current);
+		// current = extend_contract(current);
+		current = exchange(current);
 		if(current.get_cost() < best.get_cost())
 			best = current;
 		else {

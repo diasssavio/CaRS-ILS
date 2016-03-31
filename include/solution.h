@@ -24,7 +24,7 @@
 
 using namespace std;
 
-typedef struct vehicle{
+typedef struct vehicle {
 	unsigned number;
 	unsigned begin, end;
 } t_vec;
