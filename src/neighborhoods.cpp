@@ -237,6 +237,64 @@ solution neighborhoods::i_two_opt( solution& p_sol ) {
 	return p_sol;
 }
 
+solution neighborhoods::i_reverse( solution& p_sol ) {
+	unsigned n = cars.get_n();
+	vector< t_vec > vehicles(p_sol.get_vehicles());
+	vector< matrix_2d > distances = cars.get_distances();
+	vector< matrix_2d > rates = cars.get_return_rates();
+
+	if(vehicles.size() <= 2) return p_sol;
+
+	vector< pair< unsigned, unsigned > > v_pos = p_sol.get_pos();
+	vector< unsigned > route(p_sol.get_route());
+
+	// Evaluating all trips but the edge ones
+	unsigned k_rev = 0;
+	double current_cost = p_sol.get_cost();
+	cout << "Evaluating reverse moves...";
+	for(unsigned k = 1; k < vehicles.size() - 1; k++) {
+		// Aux variable to account for the last edge of the cycle
+		unsigned aux = v_pos[k + 1].second;
+		if(aux == n) aux = 0;
+
+		// Calculating the current cost for the inner reverse change
+		double cost = p_sol.get_cost();
+		cost -= rates[vehicles[k].number][ route[v_pos[k].first] ][ route[v_pos[k].second] ];
+		cost -= rates[vehicles[k - 1].number][ route[v_pos[k - 1].first] ][ route[v_pos[k - 1].second] ];
+		cost -= rates[vehicles[k + 1].number][ route[v_pos[k + 1].first] ][ route[aux] ];
+		cost -= distances[vehicles[k - 1].number][ route[v_pos[k].first - 1] ][ route[v_pos[k].first] ];
+		cost -= distances[vehicles[k + 1].number][ route[v_pos[k].second] ][ route[v_pos[k].second + 1] ];
+		cost += rates[vehicles[k].number][ route[v_pos[k].second] ][ route[v_pos[k].first] ];
+		cost += rates[vehicles[k - 1].number][ route[v_pos[k - 1].first] ][ route[v_pos[k].second] ];
+		cost += rates[vehicles[k + 1].number][ route[v_pos[k].first] ][ route[aux] ];
+		cost += distances[vehicles[k - 1].number][ route[v_pos[k].first - 1] ][ route[v_pos[k].second] ];
+		cost += distances[vehicles[k + 1].number][ route[v_pos[k].second + 1] ][ route[v_pos[k].first] ];
+
+		// If the cost is smaller than the current, the change is applied
+		if(cost < current_cost) {
+			current_cost = cost;
+			k_rev = k;
+		}
+	}
+	cout << "Evaluated!" << endl;
+
+	if(k_rev) {
+		cout << "Applying reverse" << endl;
+		reverse(route.begin() + v_pos[k_rev].first, route.begin() + (v_pos[k_rev].second + 1));
+		vehicles[k_rev].begin = vehicles[k_rev - 1].end = route[ v_pos[k_rev].first ];
+		vehicles[k_rev].end = vehicles[k_rev + 1].begin = route[ v_pos[k_rev].second ];
+
+		solution neighbor(cars);
+		neighbor.set_route(route);
+		neighbor.set_vehicles(vehicles);
+		neighbor.set_pos(v_pos);
+		neighbor.set_cost(current_cost);
+		return neighbor;
+	}
+
+	return p_sol;
+}
+
 solution neighborhoods::i_shift_one( solution& p_sol ) {
 	unsigned n = cars.get_n();
 	vector< t_vec > vehicles = p_sol.get_vehicles();
@@ -529,6 +587,10 @@ solution neighborhoods::o_swap_two( solution& p_sol ) {
 	}
 
 	return p_sol;
+}
+
+solution neighborhoods::o_swap_two_one( solution& p_sol ) {
+	// TODO
 }
 
 solution neighborhoods::o_swap_three( solution& p_sol ) {
@@ -854,6 +916,7 @@ solution neighborhoods::exchange( solution& p_sol ) {
 	// Evaluating all possible exchanges
 	unsigned k_swap = 0, l_swap = 0;
 	double current_cost = p_sol.get_cost();
+	cout << "Evaluating exchange moves...";
 	for(unsigned k = 0; k < vehicles.size() - 1; k++)
 		for(unsigned l = k + 1; l < vehicles.size(); l++) {
 			// Aux variable to calculate the last edge of the cycle
@@ -887,6 +950,7 @@ solution neighborhoods::exchange( solution& p_sol ) {
 				current_cost = cost;
 			}
 		}
+	cout << "Evaluated!" << endl;
 
 	if(k_swap != l_swap) {
 		cout << "Applying exchange" << endl;
@@ -1119,26 +1183,26 @@ solution& neighborhoods::execute( solution& p_sol ) {
 			// current = i_swap_one(current);
 			// current = i_swap_two(current);
 			// current = i_swap_three(current);
+			current = i_reverse(current);
 			// current = o_shift_one(current);
 			// current = o_shift_two(current);
-			current = o_shift_three(current);
+			// current = o_shift_three(current);
 			// current = o_swap_one(current);
 			// current = o_swap_two(current);
 			// current = o_swap_three(current);
 			if(current.get_cost() < best.get_cost())
 				best = current;
 			else is_improved = false;
-			// current = two_opt(current);
-			// if(current.get_cost() < best.get_cost())
-			// 	best = current;
-			// else {
-			// 	current = swap_one(current);
-			// 	if(current.get_cost() < best.get_cost())
-			// 		best = current;
-			// 	else is_improved = false;
-			// }
 		}
 	}
 
 	return best;
+}
+
+solution neighborhoods::inner_RVND( solution& p_sol ) {
+	// TODO
+}
+
+solution neighborhoods::outter_RVND( solution& p_sol ) {
+	// TODO
 }

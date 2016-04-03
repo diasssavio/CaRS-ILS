@@ -39,8 +39,9 @@ public:
 	solution i_swap_two( solution& );
 	solution i_swap_three( solution& );
 
-	// K-opt neighborhoods
+	// K-opt & reverse neighborhoods
 	solution i_two_opt( solution& );
+	solution i_reverse( solution& );
 
 	// Or-Opt (Shift) neighborhoods
 	solution i_shift_one( solution& );
@@ -51,6 +52,7 @@ public:
 	// Swap-exchange neighborhoods
 	solution o_swap_one( solution& );
 	solution o_swap_two( solution& );
+	solution o_swap_two_one( solution& );
 	solution o_swap_three( solution& );
 
 	// Or-Opt (Shift) neighborhoods
@@ -64,6 +66,9 @@ public:
 	solution extend_contract_one( solution& );
 
 	solution& execute( solution& );
+
+	solution inner_RVND( solution& );
+	solution outter_RVND( solution& );
 	
 };
 
