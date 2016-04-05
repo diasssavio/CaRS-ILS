@@ -37,6 +37,7 @@ solution& ils::execute() {
 	solution sol(cars);
 
 	subsets(1, cars.get_c());
+	bool first = true;
 	for(unsigned i = 0; i < sets.size() - 1; i++) {
 		printf("{");
 		for(unsigned j = 0; j < sets[i].size(); j++)
@@ -44,9 +45,15 @@ solution& ils::execute() {
 		printf("\b}\n");
 		if(sets[i].size() >= 2) {
 			sol = cons.generate_sol(sets[i]);
+			if(first) {
+				best = sol;
+				first = false;
+			}
 			sol.show_latex("BrasilRJ14e.coo", "cons.tex");
 			sol.show_data();
 			sol = neighbors.execute(sol);
+			if(sol.get_cost() < best.get_cost())
+				best = sol;
 			sol.show_data();
 			vector< pair< unsigned, unsigned> > pos = sol.get_pos();
 			for(unsigned i = 0; i < pos.size(); i++)
@@ -54,6 +61,5 @@ solution& ils::execute() {
 		}
 	}
 
-	best = sol;
 	return best;
 }

@@ -52,6 +52,7 @@ int main(int argc, char* args[]) {
 	logger logs(timer);
 	ils ILS(cars, max_it, alpha, logs);
 	solution best = ILS.execute();
+	best.show_data();
 
 	// vector< pair< unsigned, unsigned> > pos = best.get_pos();
 	// for(unsigned i = 0; i < pos.size(); i++)
