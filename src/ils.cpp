@@ -44,8 +44,8 @@ solution& ils::execute() {
 		printf("\b}\n");
 		if(sets[i].size() >= 2) {
 			sol = cons.generate_sol(sets[i]);
-			sol.show_latex("BrasilCO40e.coo", "cons.tex");
-			// sol.show_data();
+			sol.show_latex("BrasilRJ14e.coo", "cons.tex");
+			sol.show_data();
 			sol = neighbors.execute(sol);
 			sol.show_data();
 			vector< pair< unsigned, unsigned> > pos = sol.get_pos();

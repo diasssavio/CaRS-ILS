@@ -21,10 +21,15 @@
 
 using namespace std;
 
+int myrandom( unsigned );
+
 class neighborhoods {
 private:	
 	// Input instance
 	instance cars;
+
+	vector< unsigned > i_NL;
+	vector< unsigned > o_NL;
 
 	// Result best solution
 	solution best;
@@ -60,7 +65,7 @@ public:
 	solution o_shift_two( solution& );
 	solution o_shift_three( solution& );
 
-	// Vehicles neighborhoods
+	// Vehicles neighborhoods -- Also OUTTER ROUTES
 	solution exchange( solution& );
 	solution extend_contract( solution& );
 	solution extend_contract_one( solution& );

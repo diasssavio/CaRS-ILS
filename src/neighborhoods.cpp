@@ -8,6 +8,8 @@
 
 #include "../include/neighborhoods.h"
 
+int myrandom( unsigned i ) { return genrand_int32() % i; }
+
 neighborhoods::neighborhoods( instance& _cars ) { this->cars = _cars; }
 
 neighborhoods::~neighborhoods() { }
@@ -58,6 +60,7 @@ solution neighborhoods::i_swap_one( solution& p_sol ) {
 			}
 
 	if(i_swap != j_swap) {
+		cout << "Applying i_swap_1" << endl;
 		swap(route[i_swap], route[j_swap]);
 		solution neighbor(cars);
 		neighbor.set_route(route);
@@ -116,7 +119,7 @@ solution neighborhoods::i_swap_two( solution& p_sol ) {
 			}
 
 	if(i_swap != j_swap) {
-		// cout << "Applying swap_2" << endl;
+		cout << "Applying i_swap_2" << endl;
 		swap(route[i_swap], route[j_swap]);
 		swap(route[i_swap + 1], route[j_swap + 1]);
 		solution neighbor(cars);
@@ -176,7 +179,7 @@ solution neighborhoods::i_swap_three( solution& p_sol ) {
 			}
 
 	if(i_swap != j_swap) {
-		cout << "Applying swap_3" << endl;
+		cout << "Applying i_swap_3" << endl;
 		swap(route[i_swap], route[j_swap]);
 		swap(route[i_swap + 1], route[j_swap + 1]);
 		swap(route[i_swap + 2], route[j_swap + 2]);
@@ -225,6 +228,7 @@ solution neighborhoods::i_two_opt( solution& p_sol ) {
 			}
 
 	if(i_opt != j_opt) {
+		cout << "Applying two_opt" << endl;
 		reverse(route.begin() + i_opt, route.begin() + j_opt);
 		solution neighbor(cars);
 		neighbor.set_route(route);
@@ -251,7 +255,6 @@ solution neighborhoods::i_reverse( solution& p_sol ) {
 	// Evaluating all trips but the edge ones
 	unsigned k_rev = 0;
 	double current_cost = p_sol.get_cost();
-	cout << "Evaluating reverse moves...";
 	for(unsigned k = 1; k < vehicles.size() - 1; k++) {
 		// Aux variable to account for the last edge of the cycle
 		unsigned aux = v_pos[k + 1].second;
@@ -276,7 +279,6 @@ solution neighborhoods::i_reverse( solution& p_sol ) {
 			k_rev = k;
 		}
 	}
-	cout << "Evaluated!" << endl;
 
 	if(k_rev) {
 		cout << "Applying reverse" << endl;
@@ -336,6 +338,7 @@ solution neighborhoods::i_shift_one( solution& p_sol ) {
 			}
 
 	if(i_shift != j_shift) {
+		cout << "Applying i_shift_1" << endl;
 		unsigned value = route[i_shift];
 		if(i_shift > j_shift) {
 			route.erase(route.begin() + i_shift);
@@ -396,7 +399,7 @@ solution neighborhoods::i_shift_two( solution& p_sol ) {
 			}
 
 	if(i_shift != j_shift) {
-		// cout << "Applying shift_2" << endl;
+		cout << "Applying i_shift_2" << endl;
 		if(i_shift > j_shift) {
 			unsigned values[] = { route[i_shift], route[i_shift + 1] };
 			route.erase(route.begin() + i_shift, route.begin() + (i_shift + 2));
@@ -457,7 +460,7 @@ solution neighborhoods::i_shift_three( solution& p_sol ) {
 			}
 
 	if(i_shift != j_shift) {
-		cout << "Applying shift_3" << endl;
+		cout << "Applying i_shift_3" << endl;
 		if(i_shift > j_shift) {
 			unsigned values[] = { route[i_shift], route[i_shift + 1], route[i_shift + 2] };
 			route.erase(route.begin() + i_shift, route.begin() + (i_shift + 3));
@@ -1250,43 +1253,119 @@ solution neighborhoods::extend_contract_one( solution& p_sol ) {
 }
 
 solution& neighborhoods::execute( solution& p_sol ) {
-	bool is_improved = true;
-	best = p_sol;
-	solution current = p_sol;
-	while(is_improved) {
-		current.show_data();
-		// current = extend_contract(current);
-		current = exchange(current);
-		if(current.get_cost() < best.get_cost())
-			best = current;
-		else {
-			// current = i_shift_one(current);
-			// current = i_shift_two(current);
-			// current = i_shift_three(current);
-			// current = i_swap_one(current);
-			// current = i_swap_two(current);
-			// current = i_swap_three(current);
-			// current = i_reverse(current);
-			// current = o_shift_one(current);
-			// current = o_shift_two(current);
-			// current = o_shift_three(current);
-			// current = o_swap_one(current);
-			// current = o_swap_two(current);
-			current = o_swap_two_one(current);
-			// current = o_swap_three(current);
-			if(current.get_cost() < best.get_cost())
-				best = current;
-			else is_improved = false;
-		}
-	}
-
+	if(p_sol.get_vehicles().size() == 1)
+		best = inner_RVND(p_sol);
+	else
+		best = outter_RVND(p_sol);
 	return best;
 }
 
 solution neighborhoods::inner_RVND( solution& p_sol ) {
-	// TODO
+	// Setting neighborhood random order
+	i_NL = vector< unsigned >(8);
+	for(unsigned i = 0; i < 8; i++)
+		i_NL[i] = i;
+	random_shuffle(i_NL.begin(), i_NL.end(), myrandom);
+
+	for(unsigned i = 0; i < 8; i++)
+		printf("%d ", i_NL[i]);
+	printf("\n");
+
+	// Executing inner_RVND based on neighborhood order
+	solution to_return = p_sol;
+	solution aux;
+	unsigned i = 0;
+	while(i < 8) {
+		switch(i_NL[i]) {
+			case 0:
+				aux = i_swap_one(to_return);
+				break;
+			case 1:
+				aux = i_swap_two(to_return);
+				break;
+			case 2:
+				aux = i_swap_three(to_return);
+				break;
+			case 3:
+				aux = i_two_opt(to_return);
+				break;
+			case 4:
+				aux = i_reverse(to_return);
+				break;
+			case 5:
+				aux = i_shift_one(to_return);
+				break;
+			case 6:
+				aux = i_shift_two(to_return);
+				break;
+			case 7:
+				aux = i_shift_three(to_return);
+				break;
+		}
+
+		// If neighborhood find a better solution, the NL is updated
+		if(aux.get_cost() < to_return.get_cost()) {
+			to_return = aux;
+			i = 0;
+		} else i++;
+	}
+
+	return to_return;
 }
 
 solution neighborhoods::outter_RVND( solution& p_sol ) {
-	// TODO
+	// Setting neighborhood random order
+	o_NL = vector< unsigned >(9);
+	for(unsigned i = 0; i < 9; i++)
+		o_NL[i] = i;
+	random_shuffle(o_NL.begin(), o_NL.end(), myrandom);
+
+	for(unsigned i = 0; i < 9; i++)
+		printf("%d ", o_NL[i]);
+	printf("\n");
+
+	// Executing inner_RVND based on neighborhood order
+	solution to_return = p_sol;
+	solution aux;
+	unsigned i = 0;
+	while(i < 9) {
+		switch(o_NL[i]) {
+			case 0:
+				aux = o_swap_one(to_return);
+				break;
+			case 1:
+				aux = o_swap_two(to_return);
+				break;
+			case 2:
+				aux = o_swap_two_one(to_return);
+				break;
+			case 3:
+				aux = o_swap_three(to_return);
+				break;
+			case 4:
+				aux = o_shift_one(to_return);
+				break;
+			case 5:
+				aux = o_shift_two(to_return);
+				break;
+			case 6:
+				aux = o_shift_three(to_return);
+				break;
+			case 7:
+				aux = exchange(to_return);
+				break;
+			case 8:
+				aux = extend_contract(to_return);
+				break;
+		}
+
+		// If neighborhood find a better solution, the NL is updated
+		if(aux.get_cost() < to_return.get_cost()) {
+			to_return = aux;
+			to_return = inner_RVND(to_return);
+			i = 0;
+		} else i++;
+	}
+
+	return to_return;
 }
