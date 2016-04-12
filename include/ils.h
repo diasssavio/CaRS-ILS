@@ -13,6 +13,7 @@
 #include "solution.h"
 #include "constructor.h"
 #include "neighborhoods.h"
+#include "perturbation.h"
 #include "logger.h"
 #include "mt19937ar.h"
 

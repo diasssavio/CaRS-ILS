@@ -39,6 +39,8 @@ public:
 	virtual ~neighborhoods();
 
 	// TSP (route) Neighborhoods -- INNER ROUTES
+	// TODO Adapt inner route neighborhoods to avoid evaluation of different routes
+	//			In this case, one may find the best to each route without reavaluate it later
 	// Swap-exchange neighborhoods
 	solution i_swap_one( solution& );
 	solution i_swap_two( solution& );

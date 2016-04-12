@@ -108,6 +108,8 @@ $(TMP_ILS)/constructor.o: $(SRC)/constructor.cpp $(INCLUDE)/constructor.h
 	$(CCC) -c $(CCFLAGS) $(SRC)/constructor.cpp -o $(TMP_ILS)/constructor.o
 $(TMP_ILS)/neighborhoods.o: $(SRC)/neighborhoods.cpp $(INCLUDE)/neighborhoods.h
 	$(CCC) -c $(CCFLAGS) $(SRC)/neighborhoods.cpp -o $(TMP_ILS)/neighborhoods.o
+$(TMP_ILS)/perturbation.o: $(SRC)/perturbation.cpp $(INCLUDE)/perturbation.h
+	$(CCC) -c $(CCFLAGS) $(SRC)/perturbation.cpp -o $(TMP_ILS)/perturbation.o
 $(TMP_ILS)/ils.o: $(SRC)/ils.cpp $(INCLUDE)/ils.h
 	$(CCC) -c $(CCFLAGS) $(SRC)/ils.cpp -o $(TMP_ILS)/ils.o
 
@@ -126,8 +128,8 @@ $(TMP_ILS)/Structure.o:  $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o $(TMP_ILS)/
 	# gcc -Wl,-r $(TMP_ILS)/instance.o -o $(TMP_ILS)/Structure.o -nostdlib
 
 # ILS
-$(TMP_ILS)/ILS.o: $(TMP_ILS)/constructor.o $(TMP_ILS)/neighborhoods.o $(TMP_ILS)/ils.o
-	gcc -Wl,-r $(TMP_ILS)/constructor.o $(TMP_ILS)/neighborhoods.o $(TMP_ILS)/ils.o -o $(TMP_ILS)/ILS.o -nostdlib
+$(TMP_ILS)/ILS.o: $(TMP_ILS)/constructor.o $(TMP_ILS)/neighborhoods.o $(TMP_ILS)/perturbation.o $(TMP_ILS)/ils.o
+	gcc -Wl,-r $(TMP_ILS)/constructor.o $(TMP_ILS)/neighborhoods.o $(TMP_ILS)/perturbation.o $(TMP_ILS)/ils.o -o $(TMP_ILS)/ILS.o -nostdlib
 # $(TMP_ILS)/ILS.o: $(TMP_ILS)/ils.o
 # 	gcc -Wl,-r $(TMP_ILS)/ils.o -o $(TMP_ILS)/ILS.o -nostdlib
 

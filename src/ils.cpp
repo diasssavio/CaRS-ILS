@@ -34,6 +34,7 @@ void ils::subsets( unsigned i, unsigned n ) {
 solution& ils::execute() {
 	constructor cons(cars, alpha);
 	neighborhoods neighbors(cars);
+	perturbation pert(cars);
 	solution sol(cars);
 
 	subsets(1, cars.get_c());
@@ -49,15 +50,19 @@ solution& ils::execute() {
 				best = sol;
 				first = false;
 			}
-			sol.show_latex("BrasilRJ14e.coo", "cons.tex");
+			// sol.show_latex("BrasilRJ14e.coo", "cons.tex");
 			sol.show_data();
-			sol = neighbors.execute(sol);
-			if(sol.get_cost() < best.get_cost())
-				best = sol;
-			sol.show_data();
-			vector< pair< unsigned, unsigned> > pos = sol.get_pos();
-			for(unsigned i = 0; i < pos.size(); i++)
-				printf("%d->%d\n", pos[i].first, pos[i].second);
+			for(unsigned k = 0; k < 2; k++) {
+				sol = neighbors.execute(sol);
+				if(sol.get_cost() < best.get_cost())
+					best = sol;
+				sol.show_data();
+				sol = pert.multiple_shift(sol, 1);
+				sol.show_data();
+				vector< pair< unsigned, unsigned> > pos = sol.get_pos();
+				for(unsigned i = 0; i < pos.size(); i++)
+					printf("%d->%d\n", pos[i].first, pos[i].second);
+			}
 		}
 	}
 
