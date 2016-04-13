@@ -44,32 +44,34 @@ solution& ils::execute() {
 		for(unsigned j = 0; j < sets[i].size(); j++)
 			printf("%d ", --sets[i][j]);
 		printf("\b}\n");
-		if(sets[i].size() >= 2) {
-			sol = cons.generate_sol(sets[i]);
-			if(first) {
-				best = sol;
-				first = false;
-			}
-			// sol.show_latex("BrasilRJ14e.coo", "cons.tex");
-			printf("INITIAL SOLUTION:\n");
-			sol.show_data();
-			for(unsigned k = 0; k < max_it; k++) {
-				printf("RVND:\n");
-				sol = neighbors.execute(sol);
-				if(sol.get_cost() < best.get_cost())
+		if(sets[i].size() >= 3) {
+			for(unsigned l = 0; l < 10; l++) {
+				sol = cons.generate_sol(sets[i]);
+				if(first) {
 					best = sol;
-				sol.show_data();
-				if((k + 1) < max_it) {
-					printf("PERTURBATION:\n");
-					// sol = pert.multiple_shift(sol, 1);
-					// sol = pert.multiple_swap(sol, 1);
-					// sol = pert.vehicle_swap(sol);
-					sol = pert.execute(sol);
-					sol.show_data();
+					first = false;
 				}
-				vector< pair< unsigned, unsigned> > pos = sol.get_pos();
-				for(unsigned i = 0; i < pos.size(); i++)
-					printf("%d->%d\n", pos[i].first, pos[i].second);
+				// sol.show_latex("BrasilRJ14e.coo", "cons.tex");
+				printf("INITIAL SOLUTION:\n");
+				sol.show_data();
+				for(unsigned k = 0; k < max_it; k++) {
+					printf("RVND:\n");
+					sol = neighbors.execute(sol);
+					if(sol.get_cost() < best.get_cost())
+						best = sol;
+					sol.show_data();
+					if((k + 1) < max_it) {
+						printf("PERTURBATION:\n");
+						// sol = pert.multiple_shift(sol, 1);
+						// sol = pert.multiple_swap(sol, 1);
+						// sol = pert.vehicle_swap(sol);
+						sol = pert.execute(sol);
+						sol.show_data();
+					}
+					vector< pair< unsigned, unsigned> > pos = sol.get_pos();
+					for(unsigned m = 0; m < pos.size(); m++)
+						printf("%d->%d\n", pos[m].first, pos[m].second);
+				}
 			}
 		}
 	}

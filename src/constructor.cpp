@@ -19,7 +19,7 @@ constructor::constructor( instance& _cars, double _alpha ) : alpha(_alpha) {
 
 constructor::~constructor() { }
 
-solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
+solution constructor::generate_sol( vector< unsigned > allowed_cars ) {
 	unsigned n = cars.get_n();
 	unsigned c = cars.get_c();
 	vector< matrix_2d > distances = cars.get_distances();
@@ -39,10 +39,10 @@ solution constructor::generate_sol( vector< unsigned >& allowed_cars ) {
 		weights[k] = n/allowed_cars.size();
 		value -= n/allowed_cars.size();
 		// value -= weights[k];
-		// printf("%4d", weights[k]);
+		printf("%4d", weights[k]);
 	}
 	weights[allowed_cars.size() - 1] = value;
-	// printf("%4d\n", weights[allowed_cars.size() - 1]);
+	printf("%4d\n", weights[allowed_cars.size() - 1]);
 
 	// Mounting the initial tour
 	unsigned rent_place = 0;

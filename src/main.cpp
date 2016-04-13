@@ -48,11 +48,13 @@ int main(int argc, char* args[]) {
 	cars.read_data();
 
 	double alpha = 0.2;
+	// unsigned max_it = cars.get_n() + (5 * cars.get_c());
 	unsigned max_it = 50;
 	logger logs(timer);
 	ils ILS(cars, max_it, alpha, logs);
 	solution best = ILS.execute();
-	printf("BEST FOUND SOLUTION:\n");
+	timer.stop();
+	printf("BEST FOUND SOLUTION -- %.2lf:\n", timer.getStopTime());
 	best.show_data();
 
 	// vector< pair< unsigned, unsigned> > pos = best.get_pos();

@@ -31,7 +31,7 @@ public:
 
 	// TODO Adapt the constructor to get a solution based on the return_place
 	// 			using all available vehicles
-	solution generate_sol( vector < unsigned >& );
+	solution generate_sol( vector < unsigned > );
 	
 };
 

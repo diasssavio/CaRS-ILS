@@ -74,11 +74,12 @@ void solution::show_data() {
 	printf("\nROUTE:\t ");
 	for(unsigned i = 0; i < cars.get_n(); i++)
 		printf("%4d ", route[i]);
-	printf("\nCOST: %.2lf\t%.2lf\n", cost, evaluate());
-	if(cost != evaluate()) {
-		cerr << "ERROR: invalid cost value detected!" << endl;
-		exit(1);
-	}
+	// printf("\nCOST: %.2lf\t%.2lf\n", cost, evaluate());
+	printf("\nCOST: %.2lf\n", cost);
+	// if(cost != evaluate()) {
+	// 	cerr << "ERROR: invalid cost value detected!" << endl;
+	// 	exit(1);
+	// }
 	printf("-----------------------------------\n");
 }
 
