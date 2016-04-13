@@ -51,14 +51,19 @@ solution& ils::execute() {
 				first = false;
 			}
 			// sol.show_latex("BrasilRJ14e.coo", "cons.tex");
+			printf("INITIAL SOLUTION:\n");
 			sol.show_data();
-			for(unsigned k = 0; k < 2; k++) {
+			for(unsigned k = 0; k < 3; k++) {
+				printf("RVND:\n");
 				sol = neighbors.execute(sol);
 				if(sol.get_cost() < best.get_cost())
 					best = sol;
 				sol.show_data();
-				sol = pert.multiple_shift(sol, 1);
-				sol.show_data();
+				if((k + 1) < 3) {
+					printf("PERTURBATION:\n");
+					sol = pert.multiple_shift(sol, 1);
+					sol.show_data();
+				}
 				vector< pair< unsigned, unsigned> > pos = sol.get_pos();
 				for(unsigned i = 0; i < pos.size(); i++)
 					printf("%d->%d\n", pos[i].first, pos[i].second);

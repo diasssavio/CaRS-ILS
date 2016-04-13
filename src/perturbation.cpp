@@ -33,8 +33,13 @@ solution perturbation::multiple_shift( solution& p_sol, unsigned max_pert ) {
 			else l--;
 		}
 
+		number_pert--;
+
+		// Impossible to shift a route with only the renting places
+		if(p_sol.get_trip_size(k) == 1 || p_sol.get_trip_size(l) == 1) continue;
+
 		// Raffling the first element to be shifted & its position
-		unsigned i_first = v_pos[k].first + 1 + (genrand_int32() % p_sol.get_trip_size(k));
+		unsigned i_first = v_pos[k].first + 1 + (genrand_int32() % (p_sol.get_trip_size(k) - 1));
 		unsigned j_first = v_pos[l].first + (genrand_int32() % p_sol.get_trip_size(l));
 
 		// Aux variable to calculate the last edge of the cycle
@@ -54,7 +59,7 @@ solution perturbation::multiple_shift( solution& p_sol, unsigned max_pert ) {
 		printf("Cost: %.2lf\n", cost);
 
 		// Raffling the second element to be shifted & its position
-		unsigned i_second = v_pos[l].first + 1 + (genrand_int32() % p_sol.get_trip_size(l));
+		unsigned i_second = v_pos[l].first + 1 + (genrand_int32() % (p_sol.get_trip_size(l) - 1));
 		unsigned j_second = v_pos[k].first + (genrand_int32() % p_sol.get_trip_size(k));
 
 		// Aux variable to calculate the last edge of the cycle
@@ -77,18 +82,23 @@ solution perturbation::multiple_shift( solution& p_sol, unsigned max_pert ) {
 			cost += distances[ vehicles[k].number ][ route[j_second] ][ route[i_second] ];
 			cost += distances[ vehicles[k].number ][ route[i_second] ][ route[aux4] ];
 		}
-		cost -= distances[ vehicles[l].number ][ route[i_second - 1] ][ route[i_second] ];
 		if(j_first == i_second) {
-			cost -= distances[ vehicles[l].number ][ route[i_second] ][ route[aux2] ];
-			cost += distances[ vehicles[l].number ][ route[i_second - 1] ][ route[aux2] ];
+			cost -= distances[ vehicles[l].number ][ route[i_second] ][ route[i_first] ];
+			cost -= distances[ vehicles[l].number ][ route[i_second - 1] ][ route[i_second] ];
+			cost += distances[ vehicles[l].number ][ route[i_second - 1] ][ route[i_first] ];
+		} else if((j_first + 1) == i_second) {
+			cost -= distances[ vehicles[l].number ][ route[i_first] ][ route[i_second] ];
+			cost -= distances[ vehicles[l].number ][ route[i_second] ][ route[aux3] ];
+			cost += distances[ vehicles[l].number ][ route[i_first] ][ route[aux3] ];
 		} else {
 			cost -= distances[ vehicles[l].number ][ route[i_second] ][ route[aux3] ];
+			cost -= distances[ vehicles[l].number ][ route[i_second - 1] ][ route[i_second] ];
 			cost += distances[ vehicles[l].number ][ route[i_second - 1] ][ route[aux3] ];
 		}
 
 		// Applying the changes on the route
 		unsigned value1 = route[i_first], value2 = route[i_second];
-		printf("%d~>%d \t %d~>%d\n", i_first, j_first, i_second, j_second);
+		printf("%d<~>%d: %d~>%d \t %d~>%d\n", k, l, i_first, j_first, i_second, j_second);
 		if(k > l) {
 			route.insert(route.begin() + (j_second + 1), value2);
 			route.insert(route.begin() + (j_first + 1), value1);
@@ -102,8 +112,6 @@ solution perturbation::multiple_shift( solution& p_sol, unsigned max_pert ) {
 		}
 		if(j_first >= i_second) route.erase(route.begin() + i_second);
 		else route.erase(route.begin() + i_second + 1);
-
-		number_pert--;
 	}
 
 	solution neighbor(cars);

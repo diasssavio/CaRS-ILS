@@ -31,11 +31,13 @@ private:
 	vector< unsigned > i_NL;
 	vector< unsigned > o_NL;
 
+	bool logs;
+
 	// Result best solution
 	solution best;
 
 public:
-	neighborhoods( instance& );
+	neighborhoods( instance&, bool = false );
 	virtual ~neighborhoods();
 
 	// TSP (route) Neighborhoods -- INNER ROUTES
@@ -70,6 +72,8 @@ public:
 	// Vehicles neighborhoods -- Also OUTTER ROUTES
 	solution exchange( solution& );
 	solution extend_contract( solution& );
+
+	// ** Legacy method **
 	solution extend_contract_one( solution& );
 
 	solution& execute( solution& );

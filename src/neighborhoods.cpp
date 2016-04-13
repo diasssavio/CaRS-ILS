@@ -10,7 +10,10 @@
 
 int myrandom( unsigned i ) { return genrand_int32() % i; }
 
-neighborhoods::neighborhoods( instance& _cars ) { this->cars = _cars; }
+neighborhoods::neighborhoods( instance& _cars, bool _logs ) { 
+	this->cars = _cars;
+	this->logs = _logs;
+}
 
 neighborhoods::~neighborhoods() { }
 
@@ -60,7 +63,8 @@ solution neighborhoods::i_swap_one( solution& p_sol ) {
 			}
 
 	if(i_swap != j_swap) {
-		cout << "Applying i_swap_1" << endl;
+		if(logs)
+			cout << "Applying i_swap_1" << endl;
 		swap(route[i_swap], route[j_swap]);
 		solution neighbor(cars);
 		neighbor.set_route(route);
@@ -119,7 +123,8 @@ solution neighborhoods::i_swap_two( solution& p_sol ) {
 			}
 
 	if(i_swap != j_swap) {
-		cout << "Applying i_swap_2" << endl;
+		if(logs)
+			cout << "Applying i_swap_2" << endl;
 		swap(route[i_swap], route[j_swap]);
 		swap(route[i_swap + 1], route[j_swap + 1]);
 		solution neighbor(cars);
@@ -179,7 +184,8 @@ solution neighborhoods::i_swap_three( solution& p_sol ) {
 			}
 
 	if(i_swap != j_swap) {
-		cout << "Applying i_swap_3" << endl;
+		if(logs)
+			cout << "Applying i_swap_3" << endl;
 		swap(route[i_swap], route[j_swap]);
 		swap(route[i_swap + 1], route[j_swap + 1]);
 		swap(route[i_swap + 2], route[j_swap + 2]);
@@ -228,7 +234,8 @@ solution neighborhoods::i_two_opt( solution& p_sol ) {
 			}
 
 	if(i_opt != j_opt) {
-		cout << "Applying two_opt" << endl;
+		if(logs)
+			cout << "Applying two_opt" << endl;
 		reverse(route.begin() + i_opt, route.begin() + j_opt);
 		solution neighbor(cars);
 		neighbor.set_route(route);
@@ -283,7 +290,8 @@ solution neighborhoods::i_reverse( solution& p_sol ) {
 	}
 
 	if(k_rev) {
-		cout << "Applying reverse" << endl;
+		if(logs)
+			cout << "Applying reverse" << endl;
 		reverse(route.begin() + v_pos[k_rev].first, route.begin() + (v_pos[k_rev].second + 1));
 		vehicles[k_rev].begin = vehicles[k_rev - 1].end = route[ v_pos[k_rev].first ];
 		vehicles[k_rev].end = vehicles[k_rev + 1].begin = route[ v_pos[k_rev].second ];
@@ -340,7 +348,8 @@ solution neighborhoods::i_shift_one( solution& p_sol ) {
 			}
 
 	if(i_shift != j_shift) {
-		cout << "Applying i_shift_1" << endl;
+		if(logs)
+			cout << "Applying i_shift_1" << endl;
 		unsigned value = route[i_shift];
 		if(i_shift > j_shift) {
 			route.erase(route.begin() + i_shift);
@@ -401,7 +410,8 @@ solution neighborhoods::i_shift_two( solution& p_sol ) {
 			}
 
 	if(i_shift != j_shift) {
-		cout << "Applying i_shift_2" << endl;
+		if(logs)
+			cout << "Applying i_shift_2" << endl;
 		if(i_shift > j_shift) {
 			unsigned values[] = { route[i_shift], route[i_shift + 1] };
 			route.erase(route.begin() + i_shift, route.begin() + (i_shift + 2));
@@ -462,7 +472,8 @@ solution neighborhoods::i_shift_three( solution& p_sol ) {
 			}
 
 	if(i_shift != j_shift) {
-		cout << "Applying i_shift_3" << endl;
+		if(logs)
+			cout << "Applying i_shift_3" << endl;
 		if(i_shift > j_shift) {
 			unsigned values[] = { route[i_shift], route[i_shift + 1], route[i_shift + 2] };
 			route.erase(route.begin() + i_shift, route.begin() + (i_shift + 3));
@@ -523,6 +534,8 @@ solution neighborhoods::o_swap_one( solution& p_sol ) {
 				}
 
 	if(i_swap != j_swap) {
+		if(logs)
+			cout << "Applying o_swap_1\n";
 		swap(route[i_swap], route[j_swap]);
 		solution neighbor(cars);
 		neighbor.set_route(route);
@@ -580,7 +593,8 @@ solution neighborhoods::o_swap_two( solution& p_sol ) {
 				}
 
 	if(i_swap != j_swap) {
-		cout << "Applying o_swap_2" << endl;
+		if(logs)
+			cout << "Applying o_swap_2" << endl;
 		swap(route[i_swap], route[j_swap]);
 		swap(route[i_swap + 1], route[j_swap + 1]);
 		solution neighbor(cars);
@@ -643,7 +657,8 @@ solution neighborhoods::o_swap_two_one( solution& p_sol ) {
 			}
 
 	if(i_swap != j_swap) {
-		cout << "Applying o_swap_2_1" << endl;
+		if(logs)
+			cout << "Applying o_swap_2_1" << endl;
 		swap(route[i_swap], route[j_swap]);
 
 		// Shifting i_swap + 1 to its position on the new trip
@@ -694,9 +709,9 @@ solution neighborhoods::o_swap_three( solution& p_sol ) {
 	// Evaluating all possible swaps
 	unsigned i_swap = 0, j_swap = 0;
 	double current_cost = p_sol.get_cost();
-	for(unsigned k = 0; k < vehicles.size() - 1; k++)
-		for(int i = v_pos[k].first + 1; i < (int)v_pos[k].second - 2; i++)
-			for(unsigned l = k + 1; l < vehicles.size(); l++)
+	for(unsigned k = 0; k < vehicles.size() - 1; k++) {
+		for(int i = v_pos[k].first + 1; i < (int)v_pos[k].second - 2; i++) {
+			for(unsigned l = k + 1; l < vehicles.size(); l++) {
 				for(int j = v_pos[l].first + 1; j < (int)v_pos[l].second - 2; j++) {
 					// Aux variable to calculate the last edge of the cycle
 					unsigned aux = j + 3;
@@ -730,9 +745,13 @@ solution neighborhoods::o_swap_three( solution& p_sol ) {
 					}
 					// cout << "... executed!" << endl;
 				}
+			}
+		}
+	}
 
 	if(i_swap != j_swap) {
-		cout << "Applying o_swap_3" << endl;
+		if(logs)
+			cout << "Applying o_swap_3" << endl;
 		swap(route[i_swap], route[j_swap]);
 		swap(route[i_swap + 1], route[j_swap + 1]);
 		swap(route[i_swap + 2], route[j_swap + 2]);
@@ -791,6 +810,8 @@ solution neighborhoods::o_shift_one( solution& p_sol ) {
 			}
 
 	if(k_shift != l_shift) {
+		if(logs)
+			cout << "Applying o_shift_one\n";
 		unsigned value = route[i_shift];
 		if(k_shift > l_shift) {
 			route.erase(route.begin() + i_shift);
@@ -872,7 +893,8 @@ solution neighborhoods::o_shift_two( solution& p_sol ) {
 			}
 
 	if(k_shift != l_shift) {
-		cout << "Applying o_shift_two" << endl;
+		if(logs)
+			cout << "Applying o_shift_two" << endl;
 		unsigned values[] = { route[i_shift], route[i_shift + 1] };
 		if(k_shift > l_shift) {
 			route.erase(route.begin() + i_shift, route.begin() + (i_shift + 2));
@@ -956,7 +978,8 @@ solution neighborhoods::o_shift_three( solution& p_sol ) {
 			}
 
 	if(k_shift != l_shift) {
-		cout << "Applying o_shift_three" << endl;
+		if(logs)
+			cout << "Applying o_shift_three" << endl;
 		unsigned values[] = { route[i_shift], route[i_shift + 1], route[i_shift + 2] };
 		if(k_shift > l_shift) {
 			route.erase(route.begin() + i_shift, route.begin() + (i_shift + 3));
@@ -1041,7 +1064,8 @@ solution neighborhoods::exchange( solution& p_sol ) {
 		}
 
 	if(k_swap != l_swap) {
-		cout << "Applying exchange" << endl;
+		if(logs)
+			cout << "Applying exchange" << endl;
 		unsigned aux = vehicles[k_swap].number;
 		vehicles[k_swap].number = vehicles[l_swap].number;
 		vehicles[l_swap].number = aux;
@@ -1107,7 +1131,9 @@ solution neighborhoods::extend_contract( solution& p_sol ) {
 					neighbor.set_vehicles(veh);
 					neighbor.set_pos(v_pos);
 					neighbor.set_cost(cost);
-					cout << "Vehicle " << vehicles[k].number << "(" << i << "): " << cost << " - " << neighbor.evaluate() << endl;
+					if(logs)
+						cout << "Applying extend_contract (1)" << endl;
+					// cout << "Vehicle " << vehicles[k].number << "(" << i << "): " << cost << " - " << neighbor.evaluate() << endl;
 					current = neighbor;
 				}
 				// cout << endl;
@@ -1150,7 +1176,9 @@ solution neighborhoods::extend_contract( solution& p_sol ) {
 					neighbor.set_vehicles(veh);
 					neighbor.set_pos(v_pos);
 					neighbor.set_cost(cost);
-					cout << "Vehicle " << vehicles[k].number << "(" << i << "): " << cost << " - " << neighbor.evaluate() << endl;
+					if(logs)
+						cout << "Applying extend_contract (2)" << endl;
+					// cout << "Vehicle " << vehicles[k].number << "(" << i << "): " << cost << " - " << neighbor.evaluate() << endl;
 					current = neighbor;
 				}
 				// cout << endl;
@@ -1257,18 +1285,9 @@ solution neighborhoods::extend_contract_one( solution& p_sol ) {
 solution& neighborhoods::execute( solution& p_sol ) {
 	if(p_sol.get_vehicles().size() == 1)
 		best = inner_RVND(p_sol);
-	else {
-		bool is_improved = true;
-		solution aux;
-		best = p_sol;
-		while(is_improved) {
-			aux = extend_contract(best);
-			if(aux.get_cost() < best.get_cost()) {
-				aux = outter_RVND(aux);
-				best = aux;
-			} else is_improved = false;
-		}
-	}
+	else
+		best = outter_RVND(p_sol);
+
 	return best;
 }
 
@@ -1287,38 +1306,49 @@ solution neighborhoods::inner_RVND( solution& p_sol ) {
 	solution to_return = p_sol;
 	solution aux;
 	unsigned i = 0;
+	cout << "Executing inner_RVND\n";
 	while(i < 8) {
+		if(logs)
+			printf("    ");
 		switch(i_NL[i]) {
 			case 0:
-				cout << "Trying i_swap_one...\n";
+				if(logs)
+					cout << "Trying i_swap_one...\n";
 				aux = i_swap_one(to_return);
 				break;
 			case 1:
-				cout << "Trying i_swap_two...\n";
+				if(logs)
+					cout << "Trying i_swap_two...\n";
 				aux = i_swap_two(to_return);
 				break;
 			case 2:
-				cout << "Trying i_swap_three...\n";
+				if(logs)
+					cout << "Trying i_swap_three...\n";
 				aux = i_swap_three(to_return);
 				break;
 			case 3:
-				cout << "Trying two_opt...\n";
+				if(logs)
+					cout << "Trying two_opt...\n";
 				aux = i_two_opt(to_return);
 				break;
 			case 4:
-				cout << "Trying i_reverse...\n";
+				if(logs)
+					cout << "Trying i_reverse...\n";
 				aux = i_reverse(to_return);
 				break;
 			case 5:
-				cout << "Trying i_shift_one...\n";
+				if(logs)
+					cout << "Trying i_shift_one...\n";
 				aux = i_shift_one(to_return);
 				break;
 			case 6:
-				cout << "Trying i_shift_two...\n";
+				if(logs)
+					cout << "Trying i_shift_two...\n";
 				aux = i_shift_two(to_return);
 				break;
 			case 7:
-				cout << "Trying i_shift_three...\n";
+				if(logs)
+					cout << "Trying i_shift_three...\n";
 				aux = i_shift_three(to_return);
 				break;
 		}
@@ -1335,56 +1365,69 @@ solution neighborhoods::inner_RVND( solution& p_sol ) {
 
 solution neighborhoods::outter_RVND( solution& p_sol ) {
 	// Setting neighborhood random order
-	o_NL = vector< unsigned >(8);
-	for(unsigned i = 0; i < 8; i++)
+	o_NL = vector< unsigned >(9);
+	for(unsigned i = 0; i < 9; i++)
 		o_NL[i] = i;
 	random_shuffle(o_NL.begin(), o_NL.end(), myrandom);
 
-	for(unsigned i = 0; i < 8; i++)
+	for(unsigned i = 0; i < 9; i++)
 		printf("%d ", o_NL[i]);
 	printf("\n");
 
-	// Executing inner_RVND based on neighborhood order
+	// Executing outter_RVND based on neighborhood order
 	solution to_return = p_sol;
 	solution aux;
 	unsigned i = 0;
+	cout << "Executing outter_RVND\n";
 	while(i < 9) {
+		if(logs)
+			printf("  ");
 		switch(o_NL[i]) {
 			case 0:
-				cout << "Trying o_swap_one...\n";
+				if(logs)
+					cout << "Trying o_swap_one...\n";
 				aux = o_swap_one(to_return);
 				break;
 			case 1:
-				cout << "Trying o_swap_two...\n";
+				if(logs)
+					cout << "Trying o_swap_two...\n";
 				aux = o_swap_two(to_return);
 				break;
 			case 2:
-				cout << "Trying o_swap_two_one...\n";
+				if(logs)
+					cout << "Trying o_swap_two_one...\n";
 				aux = o_swap_two_one(to_return);
 				break;
 			case 3:
-				cout << "Trying o_swap_three...\n";
+				if(logs)
+					cout << "Trying o_swap_three...\n";
 				aux = o_swap_three(to_return);
 				break;
 			case 4:
-				cout << "Trying o_shift_one...\n";
+				if(logs)
+					cout << "Trying o_shift_one...\n";
 				aux = o_shift_one(to_return);
 				break;
 			case 5:
-				cout << "Trying o_shift_two...\n";
+				if(logs)
+					cout << "Trying o_shift_two...\n";
 				aux = o_shift_two(to_return);
 				break;
 			case 6:
-				cout << "Trying o_shift_three...\n";
+				if(logs)
+					cout << "Trying o_shift_three...\n";
 				aux = o_shift_three(to_return);
 				break;
 			case 7:
-				cout << "Trying exchange...\n";
+				if(logs)
+					cout << "Trying exchange...\n";
 				aux = exchange(to_return);
 				break;
-			// case 8:
-			// 	aux = extend_contract(to_return);
-			// 	break;
+			case 8:
+				if(logs)
+					cout << "Trying extend_contract...\n";
+				aux = extend_contract(to_return);
+				break;
 		}
 
 		// If neighborhood find a better solution, the NL is updated
