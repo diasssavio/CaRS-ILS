@@ -1016,13 +1016,15 @@ solution neighborhoods::o_shift_three( solution& p_sol ) {
 }
 
 solution neighborhoods::exchange( solution& p_sol ) {
-	unsigned n = cars.get_n();
 	vector< t_vec > vehicles(p_sol.get_vehicles());
+	
+	if(vehicles.size() <= 1) return p_sol;
+
+	unsigned n = cars.get_n();
 	vector< pair< unsigned, unsigned> > v_pos(p_sol.get_pos());
 	vector< matrix_2d > distances = cars.get_distances();
 	vector< matrix_2d > rates = cars.get_return_rates();
 
-	if(vehicles.size() <= 1) return p_sol;
 
 	vector< unsigned > route = p_sol.get_route();
 
@@ -1066,9 +1068,7 @@ solution neighborhoods::exchange( solution& p_sol ) {
 	if(k_swap != l_swap) {
 		if(logs)
 			cout << "Applying exchange" << endl;
-		unsigned aux = vehicles[k_swap].number;
-		vehicles[k_swap].number = vehicles[l_swap].number;
-		vehicles[l_swap].number = aux;
+		swap(vehicles[k_swap].number, vehicles[l_swap].number);
 
 		solution neighbor(cars);
 		neighbor.set_route(route);

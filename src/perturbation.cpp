@@ -20,7 +20,7 @@ solution perturbation::multiple_shift( solution& p_sol, unsigned max_pert ) {
 
 	vector< t_vec > vehicles = p_sol.get_vehicles();
 
-	if(vehicles.size() == 1) return p_sol;
+	if(vehicles.size() <= 1) return p_sol;
 
 	vector< pair< unsigned, unsigned> > v_pos = p_sol.get_pos();
 	vector< unsigned > route(p_sol.get_route());
@@ -39,7 +39,7 @@ solution perturbation::multiple_shift( solution& p_sol, unsigned max_pert ) {
 		number_pert--;
 
 		// Impossible to shift a route with only the renting places
-		if(p_sol.get_trip_size(k) == 1 || p_sol.get_trip_size(l) == 1) continue;
+		if(p_sol.get_trip_size(k) <= 1 || p_sol.get_trip_size(l) <= 1) continue;
 
 		// Raffling the first element to be shifted & its position
 		unsigned i_first = v_pos[k].first + 1 + (genrand_int32() % (p_sol.get_trip_size(k) - 1));
@@ -145,7 +145,7 @@ solution perturbation::multiple_swap( solution& p_sol, unsigned max_pert ) {
 		number_pert--;
 
 		// Impossible to swap routes with only the renting places
-		if(p_sol.get_trip_size(k) == 1 || p_sol.get_trip_size(l) == 1) continue;
+		if(p_sol.get_trip_size(k) <= 1 || p_sol.get_trip_size(l) <= 1) continue;
 
 		// Raffling the elements to be swapped
 		unsigned i = v_pos[k].first + 1 + (genrand_int32() % (p_sol.get_trip_size(k) - 1));
@@ -204,7 +204,59 @@ solution perturbation::multiple_swap( solution& p_sol, unsigned max_pert ) {
 }
 
 solution perturbation::vehicle_swap( solution& p_sol ) {
+	vector< t_vec > vehicles(p_sol.get_vehicles());
+	
+	if(vehicles.size() <= 1) return p_sol;
 
+	unsigned n = cars.get_n();
+	vector< pair< unsigned, unsigned> > v_pos(p_sol.get_pos());
+	vector< matrix_2d > distances = cars.get_distances();
+	vector< matrix_2d > rates = cars.get_return_rates();
+	vector< unsigned > route = p_sol.get_route();
+
+	// Raffling the two routes to be perturbed
+	unsigned k = genrand_int32() % vehicles.size();
+	unsigned l = genrand_int32() % vehicles.size();
+
+	if(k == l) {
+		if((l + 1) < vehicles.size()) l++;
+		else l--;
+	}
+	if(k > l) swap(k, l);
+
+	// Aux variable to calculate the last edge of the cycle
+	unsigned aux = v_pos[l].second;
+	if(aux == n) aux = 0;
+
+	double cost = p_sol.get_cost();
+
+	// Removing the edges & fees from the previous vehicles
+	cost -= rates[ vehicles[k].number ][ route [ v_pos[k].first ] ][ route[ v_pos[k].second ] ];
+	cost -= rates[ vehicles[l].number ][ route [ v_pos[l].first ] ][ route[aux] ];
+	for(unsigned i = v_pos[k].first; i < v_pos[k].second; i++)
+		cost -= distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
+	for(unsigned i = v_pos[l].first; i < v_pos[l].second - 1; i++)
+		cost -= distances[ vehicles[l].number ][ route[i] ][ route[i + 1] ];
+	cost -= distances[ vehicles[l].number ][ route[ v_pos[l].second - 1 ] ][ route[aux] ];
+
+	// Adding the edges from the possible exchange in vehicles
+	cost += rates[ vehicles[l].number ][ route [ v_pos[k].first ] ][ route[ v_pos[k].second ] ];
+	cost += rates[ vehicles[k].number ][ route [ v_pos[l].first ] ][ route[aux] ];
+	for(unsigned i = v_pos[k].first; i < v_pos[k].second; i++)
+		cost += distances[ vehicles[l].number ][ route[i] ][ route[i + 1] ];
+	for(unsigned i = v_pos[l].first; i < v_pos[l].second - 1; i++)
+		cost += distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
+	cost += distances[ vehicles[k].number ][ route[ v_pos[l].second - 1 ] ][ route[aux] ];
+
+	swap(vehicles[k].number, vehicles[l].number);
+
+	solution perturbed(cars);
+	perturbed.set_route(route);
+	perturbed.set_vehicles(vehicles);
+	perturbed.set_pos(v_pos);
+	perturbed.set_cost(cost);
+
+	return perturbed;
 }
 
 solution perturbation::double_bridge( solution& p_sol ) {
@@ -212,16 +264,24 @@ solution perturbation::double_bridge( solution& p_sol ) {
 }
 
 solution perturbation::execute( solution& p_sol ) {
-	unsigned perturb = genrand_int32() % 2;
+	unsigned perturb = genrand_int32() % 3;
 	solution perturbed;
 	switch(perturb) {
 		case 0:
-			printf("Multiple_shift:\n");
+			printf("Multiple Shift:\n");
 			perturbed = multiple_shift(p_sol, 1);
 			break;
 		case 1:
-			printf("Multiple_swap:\n");
+			printf("Multiple Swap:\n");
 			perturbed = multiple_swap(p_sol, 1);
+			break;
+		case 2:
+			printf("Vehicle Swap:\n");
+			perturbed = vehicle_swap(p_sol);
+			break;
+		case 3:
+			printf("Double Bridge:\n");
+			perturbed = double_bridge(p_sol);
 			break;
 	}
 
