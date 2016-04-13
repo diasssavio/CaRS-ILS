@@ -19,6 +19,9 @@ solution perturbation::multiple_shift( solution& p_sol, unsigned max_pert ) {
 	vector< matrix_2d > distances = cars.get_distances();
 
 	vector< t_vec > vehicles = p_sol.get_vehicles();
+
+	if(vehicles.size() == 1) return p_sol;
+
 	vector< pair< unsigned, unsigned> > v_pos = p_sol.get_pos();
 	vector< unsigned > route(p_sol.get_route());
 
@@ -114,17 +117,90 @@ solution perturbation::multiple_shift( solution& p_sol, unsigned max_pert ) {
 		else route.erase(route.begin() + i_second + 1);
 	}
 
-	solution neighbor(cars);
-	neighbor.set_route(route);
-	neighbor.set_vehicles(vehicles);
-	neighbor.set_pos(v_pos);
-	neighbor.set_cost(cost);
+	solution perturbed(cars);
+	perturbed.set_route(route);
+	perturbed.set_vehicles(vehicles);
+	perturbed.set_pos(v_pos);
+	perturbed.set_cost(cost);
 
-	return neighbor;
+	return perturbed;
 }
 
 solution perturbation::multiple_swap( solution& p_sol, unsigned max_pert ) {
 	unsigned number_pert = 1 + (genrand_int32() % max_pert);
+
+	unsigned n = cars.get_n();
+	vector< t_vec > vehicles = p_sol.get_vehicles();
+	vector< matrix_2d > distances = cars.get_distances();
+
+	vector< pair< unsigned, unsigned> > v_pos = p_sol.get_pos();
+	vector< unsigned > route(p_sol.get_route());
+
+	double cost = p_sol.get_cost();
+	while(number_pert > 0) {
+		// Raffling the two routes to be perturbed
+		unsigned k = genrand_int32() % vehicles.size();
+		unsigned l = genrand_int32() % vehicles.size();
+
+		number_pert--;
+
+		// Impossible to swap routes with only the renting places
+		if(p_sol.get_trip_size(k) == 1 || p_sol.get_trip_size(l) == 1) continue;
+
+		// Raffling the elements to be swapped
+		unsigned i = v_pos[k].first + 1 + (genrand_int32() % (p_sol.get_trip_size(k) - 1));
+		unsigned j = v_pos[l].first + 1 + (genrand_int32() % (p_sol.get_trip_size(l) - 1));
+
+		// Check for swapping equals vertices and avoid inner swap with trip_size = 2
+		if(i == j) {
+			if((j + 1) < v_pos[l].second) j++;
+			else if((j - 1) > v_pos[l].first) j--;
+			else continue;
+		}
+		if(i > j) {
+			swap(i, j);
+			swap(k, l);
+		}
+
+		printf("%d <-> %d \n", route[i], route[j]);
+
+		// Aux variable to calculate the last edge of the cycle
+		unsigned aux1 = i + 1;
+		if(i == (n - 1)) aux1 = 0;
+		unsigned aux2 = j + 1;
+		if(j == (n - 1)) aux2 = 0;
+
+		// Calculating the current cost for the swap change
+		cost += distances[ vehicles[k].number ][ route[i - 1] ][ route[j] ];
+		cost += distances[ vehicles[l].number ][ route[i] ][ route[aux2] ];
+		cost -= distances[ vehicles[k].number ][ route[i - 1] ][ route[i] ];
+		cost -= distances[ vehicles[l].number ][ route[j] ][ route[aux2] ];
+		cost -= distances[ vehicles[k].number ][ route[i] ][ route[aux1] ];
+		if(k == l) { // Inner swap
+			// If i & j are adjacent
+			if(j == (i + 1) || i == (j + 1))
+				cost += distances[ vehicles[k].number ][ route[j] ][ route[i] ];
+			else { // otherwise
+				cost += distances[ vehicles[k].number ][ route[j] ][ route[aux1] ];
+				cost += distances[ vehicles[k].number ][ route[j - 1] ][ route[i] ];
+				cost -= distances[ vehicles[k].number ][ route[j - 1] ][ route[j] ];
+			}
+		} else { // Outter swap
+			cost += distances[ vehicles[l].number ][ route[j - 1] ][ route[i] ];
+			cost += distances[ vehicles[k].number ][ route[j] ][ route[aux1] ];
+			cost -= distances[ vehicles[l].number ][ route[j - 1] ][ route[j] ];
+		}
+
+		swap(route[i], route[j]);
+	}
+
+	solution perturbed(cars);
+	perturbed.set_route(route);
+	perturbed.set_vehicles(vehicles);
+	perturbed.set_pos(v_pos);
+	perturbed.set_cost(cost);
+
+	return perturbed;
 }
 
 solution perturbation::vehicle_swap( solution& p_sol ) {
@@ -136,5 +212,18 @@ solution perturbation::double_bridge( solution& p_sol ) {
 }
 
 solution perturbation::execute( solution& p_sol ) {
-	
+	unsigned perturb = genrand_int32() % 2;
+	solution perturbed;
+	switch(perturb) {
+		case 0:
+			printf("Multiple_shift:\n");
+			perturbed = multiple_shift(p_sol, 1);
+			break;
+		case 1:
+			printf("Multiple_swap:\n");
+			perturbed = multiple_swap(p_sol, 1);
+			break;
+	}
+
+	return perturbed;
 }

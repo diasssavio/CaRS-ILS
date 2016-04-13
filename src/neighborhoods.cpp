@@ -1298,6 +1298,7 @@ solution neighborhoods::inner_RVND( solution& p_sol ) {
 		i_NL[i] = i;
 	random_shuffle(i_NL.begin(), i_NL.end(), myrandom);
 
+	cout << "Executing inner_RVND: ";
 	for(unsigned i = 0; i < 8; i++)
 		printf("%d ", i_NL[i]);
 	printf("\n");
@@ -1306,7 +1307,6 @@ solution neighborhoods::inner_RVND( solution& p_sol ) {
 	solution to_return = p_sol;
 	solution aux;
 	unsigned i = 0;
-	cout << "Executing inner_RVND\n";
 	while(i < 8) {
 		if(logs)
 			printf("    ");
@@ -1370,6 +1370,7 @@ solution neighborhoods::outter_RVND( solution& p_sol ) {
 		o_NL[i] = i;
 	random_shuffle(o_NL.begin(), o_NL.end(), myrandom);
 
+	cout << "Executing outter_RVND: ";
 	for(unsigned i = 0; i < 9; i++)
 		printf("%d ", o_NL[i]);
 	printf("\n");
@@ -1378,7 +1379,6 @@ solution neighborhoods::outter_RVND( solution& p_sol ) {
 	solution to_return = p_sol;
 	solution aux;
 	unsigned i = 0;
-	cout << "Executing outter_RVND\n";
 	while(i < 9) {
 		if(logs)
 			printf("  ");
