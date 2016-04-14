@@ -54,8 +54,9 @@ int main(int argc, char* args[]) {
 	ils ILS(cars, max_it, alpha, logs);
 	solution best = ILS.execute();
 	timer.stop();
-	printf("BEST FOUND SOLUTION -- %.2lf:\n", timer.getStopTime());
-	best.show_data();
+	printf("%.2lf;%.2lf\n", best.get_cost(), timer.getStopTime());
+	// printf("BEST FOUND SOLUTION -- %.2lf:\n", timer.getStopTime());
+	// best.show_data();
 
 	// vector< pair< unsigned, unsigned> > pos = best.get_pos();
 	// for(unsigned i = 0; i < pos.size(); i++)

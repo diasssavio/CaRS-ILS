@@ -39,10 +39,10 @@ solution constructor::generate_sol( vector< unsigned > allowed_cars ) {
 		weights[k] = n/allowed_cars.size();
 		value -= n/allowed_cars.size();
 		// value -= weights[k];
-		printf("%4d", weights[k]);
+		// printf("%4d", weights[k]);
 	}
 	weights[allowed_cars.size() - 1] = value;
-	printf("%4d\n", weights[allowed_cars.size() - 1]);
+	// printf("%4d\n", weights[allowed_cars.size() - 1]);
 
 	// Mounting the initial tour
 	unsigned rent_place = 0;

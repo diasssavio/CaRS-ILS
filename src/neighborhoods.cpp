@@ -1298,10 +1298,10 @@ solution neighborhoods::inner_RVND( solution& p_sol ) {
 		i_NL[i] = i;
 	random_shuffle(i_NL.begin(), i_NL.end(), myrandom);
 
-	cout << "Executing inner_RVND: ";
-	for(unsigned i = 0; i < 8; i++)
-		printf("%d ", i_NL[i]);
-	printf("\n");
+	// cout << "Executing inner_RVND: ";
+	// for(unsigned i = 0; i < 8; i++)
+	// 	printf("%d ", i_NL[i]);
+	// printf("\n");
 
 	// Executing inner_RVND based on neighborhood order
 	solution to_return = p_sol;
@@ -1370,10 +1370,10 @@ solution neighborhoods::outter_RVND( solution& p_sol ) {
 		o_NL[i] = i;
 	random_shuffle(o_NL.begin(), o_NL.end(), myrandom);
 
-	cout << "Executing outter_RVND: ";
-	for(unsigned i = 0; i < 9; i++)
-		printf("%d ", o_NL[i]);
-	printf("\n");
+	// cout << "Executing outter_RVND: ";
+	// for(unsigned i = 0; i < 9; i++)
+	// 	printf("%d ", o_NL[i]);
+	// printf("\n");
 
 	// Executing outter_RVND based on neighborhood order
 	solution to_return = p_sol;

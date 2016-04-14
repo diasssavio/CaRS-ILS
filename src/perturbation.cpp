@@ -59,7 +59,7 @@ solution perturbation::multiple_shift( solution& p_sol, unsigned max_pert ) {
 		cost += distances[ vehicles[l].number ][ route[i_first] ][ route[aux2] ];
 		cost += distances[ vehicles[k].number ][ route[i_first - 1] ][ route[aux1] ];
 
-		printf("Cost: %.2lf\n", cost);
+		// printf("Cost: %.2lf\n", cost);
 
 		// Raffling the second element to be shifted & its position
 		unsigned i_second = v_pos[l].first + 1 + (genrand_int32() % (p_sol.get_trip_size(l) - 1));
@@ -101,7 +101,7 @@ solution perturbation::multiple_shift( solution& p_sol, unsigned max_pert ) {
 
 		// Applying the changes on the route
 		unsigned value1 = route[i_first], value2 = route[i_second];
-		printf("%d<~>%d: %d~>%d \t %d~>%d\n", k, l, i_first, j_first, i_second, j_second);
+		// printf("%d<~>%d: %d~>%d \t %d~>%d\n", k, l, i_first, j_first, i_second, j_second);
 		if(k > l) {
 			route.insert(route.begin() + (j_second + 1), value2);
 			route.insert(route.begin() + (j_first + 1), value1);
@@ -162,7 +162,7 @@ solution perturbation::multiple_swap( solution& p_sol, unsigned max_pert ) {
 			swap(k, l);
 		}
 
-		printf("%d <-> %d \n", route[i], route[j]);
+		// printf("%d <-> %d \n", route[i], route[j]);
 
 		// Aux variable to calculate the last edge of the cycle
 		unsigned aux1 = i + 1;
@@ -268,19 +268,19 @@ solution perturbation::execute( solution& p_sol ) {
 	solution perturbed;
 	switch(perturb) {
 		case 0:
-			printf("Multiple Shift:\n");
+			// printf("Multiple Shift:\n");
 			perturbed = multiple_shift(p_sol, 1);
 			break;
 		case 1:
-			printf("Multiple Swap:\n");
+			// printf("Multiple Swap:\n");
 			perturbed = multiple_swap(p_sol, 1);
 			break;
 		case 2:
-			printf("Vehicle Swap:\n");
+			// printf("Vehicle Swap:\n");
 			perturbed = vehicle_swap(p_sol);
 			break;
 		case 3:
-			printf("Double Bridge:\n");
+			// printf("Double Bridge:\n");
 			perturbed = double_bridge(p_sol);
 			break;
 	}
