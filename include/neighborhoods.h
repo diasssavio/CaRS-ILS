@@ -71,6 +71,7 @@ public:
 
 	// Vehicles neighborhoods -- Also OUTTER ROUTES
 	solution exchange( solution& );
+	solution full_extend_contract( solution& );
 	solution extend_contract( solution& );
 
 	// ** Legacy method **
