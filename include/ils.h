@@ -31,6 +31,7 @@ class ils {
 private:
 	// Parameters
 	unsigned max_it;
+	unsigned max_ms_it;
 	double alpha;
 	
 	// Input instance
@@ -49,7 +50,7 @@ private:
 	void subsets( unsigned, unsigned );
 
 public:
-	ils( instance&, unsigned, double, logger& );
+	ils( instance&, unsigned, unsigned, double, logger& );
 	virtual ~ils();
 
 	solution& execute();

@@ -50,44 +50,18 @@ int main(int argc, char* args[]) {
 	double alpha = 0.2;
 	// unsigned max_it = cars.get_n() + (5 * cars.get_c());
 	unsigned max_it = 50;
+	unsigned max_ms_it = 10;
 	logger logs(timer);
-	ils ILS(cars, max_it, alpha, logs);
+	ils ILS(cars, max_ms_it, max_it, alpha, logs);
 	solution best = ILS.execute();
 	timer.stop();
-	printf("%.2lf;%.2lf\n", best.get_cost(), timer.getStopTime());
+	printf("%.2lf;%.2lf;", best.get_cost(), timer.getStopTime());
 	// printf("BEST FOUND SOLUTION -- %.2lf:\n", timer.getStopTime());
 	// best.show_data();
 
 	// vector< pair< unsigned, unsigned> > pos = best.get_pos();
 	// for(unsigned i = 0; i < pos.size(); i++)
 	// 	printf("%d %d\n", pos[i].first, pos[i].second);
-
-	/*int max_iterations = 0.1 * n;
-	int max_r = max_iterations / 2;
-	double alpha_2 = 0.2;
-
-	// ils ILS(instance, max_iterations, p, r, timer);
-	ils ILS(instance, max_iterations, max_r, alpha_2, p, r, timer);
-	solution result = ILS.execute();
-
-	timer.stop();
-	// printf("TOTAL EXECUTION TIME: %.2lf", timer.getStopTime());
-	printf("%.2lf,", timer.getStopTime());
-	// result.show_data();
-
-	// printf("\nIT_LOG:\n");
-	vector< pair< double, unsigned> > it_log = ILS.get_it_log();
-	vector< double > times = ILS.get_times();
-	double min_time = 0.0;
-	for(unsigned i = 0; i < it_log.size(); i++){
-		// printf("#%d:\t%.2lf\t%.2lf\n", it_log[i].second, it_log[i].first, times[i]);
-
-		if(it_log[i].first == result.get_total_cost() && min_time == 0.0)
-			min_time = times[i];
-	}
-
-	printf("%.2lf,%.2lf\n", min_time, result.get_total_cost());
-	// cout << "," << seed << endl;*/
 
 	if(argc >= 3)
 		best.show_latex(args[2], "plot.tex");

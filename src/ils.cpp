@@ -8,7 +8,7 @@
 
 #include "../include/ils.h"
 
-ils::ils( instance& _cars, unsigned _it, double _alpha, logger& _logs ) : max_it(_it), alpha(_alpha) {
+ils::ils( instance& _cars, unsigned _ms_it, unsigned _it, double _alpha, logger& _logs ) : max_it(_it), max_ms_it(_ms_it), alpha(_alpha) {
 	this->cars = _cars;
 	this->logs = _logs;
 }
@@ -46,7 +46,7 @@ solution& ils::execute() {
 			// printf("%d ", --sets[i][j]);
 		// printf("\b}\n");
 		if(sets[i].size() >= cars.get_c()) {
-			for(unsigned l = 0; l < 10; l++) {
+			for(unsigned l = 0; l < max_ms_it; l++) {
 				sol = cons.generate_sol(sets[i]);
 				if(first) {
 					best = sol;
