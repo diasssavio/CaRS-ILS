@@ -345,7 +345,7 @@ void leInstancia(char *fname)
 		   		// fprintf(ptarq,"\n  %10li ",i+1);
 		   		fprintf(ptarq,"\n");
     	   		for (int j=0; j<nCid; j++)
-    	        	fprintf(ptarq,"%4li", cust[h][i][j]);
+    	        	fprintf(ptarq," %li", cust[h][i][j]);
 	   		}
 	   			
 	   		// fprintf(ptarq,"; ");
@@ -430,7 +430,7 @@ void leInstancia(char *fname)
     		for (int i=0; i<nCid; i++) {
 		   		fprintf(ptarq,"\n");
     	   		for (int j=0; j<nCid; j++)
-    	        	fprintf(ptarq,"%4li", taxa[h][i][j]);
+    	        	fprintf(ptarq," %li", taxa[h][i][j]);
 	   		}
 	   			// fprintf(ptarq,"\n");
 	   		// fprintf(ptarq,"; ");
