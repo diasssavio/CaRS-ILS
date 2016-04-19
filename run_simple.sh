@@ -1,41 +1,41 @@
 #!/bin/bash
-for i in $(seq 10)
+#for j in instances/small_insts/*.txt
+#do
+#	FILE=$(basename "$j" .txt)
+#	echo "$FILE"
+#	for i in $(seq 30)
+#	do
+#		./CaRS-ILS $i < $j >> logs/$FILE.csv
+#		echo "$i...ok!"
+#	done
+#done
+echo "dados_att48eA"
+for i in $(seq 30)
 do
-	./CaRS-ILS $i < instances/insts/dados_BrasilRJ14e.txt >> logs/BrasilRJ14e.csv
-	echo "BrasilRJ14e: $i...ok!"
+ 	./CaRS-ILS $i < instances/small_insts/dados_att48eA.txt >> logs/dados_att48eA.csv
+	echo "$i...ok!"
 done
-for i in $(seq 10)
+echo "dados_berlin52eA"
+for i in $(seq 30)
 do
-	./CaRS-ILS $i < instances/insts/dados_BrasilMG30e.txt >> logs/BrasilMG30e.csv
-	echo "BrasilMG30e: $i...ok!"
+ 	./CaRS-ILS $i < instances/small_insts/dados_berlin52eA.txt >> logs/dados_berlin52eA.csv
+	echo "$i...ok!"
 done
-for i in $(seq 10)
+echo "dados_eil76eB"
+for i in $(seq 30)
 do
-	./CaRS-ILS $i < instances/insts/dados_BrasilCO40e.txt >> logs/BrasilCO40e.csv
-	echo "BrasilCO40e: $i...ok!"
+ 	./CaRS-ILS $i < instances/small_insts/dados_eil76eB.txt >> logs/dados_eil76eB.csv
+	echo "$i...ok!"
 done
-for i in $(seq 10)
+echo "dados_rat99eB"
+for i in $(seq 30)
 do
-	./CaRS-ILS $i < instances/insts/dados_BoaVista80e.txt >> logs/BoaVista80e.csv
-	echo "BoaVista80e: $i...ok!"
+ 	./CaRS-ILS $i < instances/small_insts/dados_rat99eB.txt >> logs/dados_rat99eB.csv
+	echo "$i...ok!"
 done
-for i in $(seq 10)
+echo "dados_st70eB"
+for i in $(seq 30)
 do
-	./CaRS-ILS $i < instances/insts/dados_Betim100e.txt >> logs/Betim100e.csv
-	echo "Betim100e: $i...ok!"
-done
-for i in $(seq 10)
-do
-	./CaRS-ILS $i < instances/insts/dados_PortoVelho200e.txt >> logs/PortoVelho200e.csv
-	echo "PortoVelho200e: $i...ok!"
-done
-for i in $(seq 10)
-do
-	./CaRS-ILS $i < instances/insts/dados_Belem300e.txt >> logs/Belem300e.csv
-	echo "Belem300e: $i...ok!"
-done
-for i in $(seq 10)
-do
-	./CaRS-ILS $i < instances/insts/dados_rat99eB.txt >> logs/rat99eB.csv
-	echo "rat99eB: $i...ok!"
+ 	./CaRS-ILS $i < instances/small_insts/dados_st70eB.txt >> logs/dados_st70eB.csv
+	echo "$i...ok!"
 done

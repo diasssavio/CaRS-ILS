@@ -33,7 +33,7 @@ void ils::subsets( unsigned i, unsigned n ) {
 
 solution& ils::execute() {
 	constructor cons(cars, alpha);
-	neighborhoods neighbors(cars, true);
+	neighborhoods neighbors(cars);
 	perturbation pert(cars);
 	solution sol(cars);
 
@@ -53,24 +53,24 @@ solution& ils::execute() {
 					first = false;
 				}
 				// sol.show_latex("BrasilRJ14e.coo", "cons.tex");
-				printf("INITIAL SOLUTION:\n");
-				sol.show_data();
+				// printf("INITIAL SOLUTION:\n");
+				// sol.show_data();
 				for(unsigned k = 0; k < max_it; k++) {
-					printf("RVND:\n");
+					// printf("RVND:\n");
 					sol = neighbors.execute(sol);
 					// sol = neighbors.full_extend_contract(sol);
 					// sol = neighbors.extend_contract(sol);
 					if(sol.get_cost() < best.get_cost())
 						best = sol;
-					sol.show_data();
+					// sol.show_data();
 					if((k + 1) < max_it) {
-						printf("PERTURBATION:\n");
+						// printf("PERTURBATION:\n");
 						sol = pert.execute(sol);
-						sol.show_data();
+						// sol.show_data();
 					}
-					vector< pair< unsigned, unsigned> > pos = sol.get_pos();
-					for(unsigned m = 0; m < pos.size(); m++)
-						printf("%d->%d\n", pos[m].first, pos[m].second);
+					// vector< pair< unsigned, unsigned> > pos = sol.get_pos();
+					// for(unsigned m = 0; m < pos.size(); m++)
+					// 	printf("%d->%d\n", pos[m].first, pos[m].second);
 				}
 			}
 		}

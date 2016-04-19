@@ -1135,7 +1135,7 @@ solution neighborhoods::full_extend_contract( solution& p_sol ) {
 					neighbor.set_cost(cost);
 					if(logs)
 						cout << "Applying extend_contract (1)" << endl;
-					cout << "Vehicle " << vehicles[k].number << "(" << i << "): " << cost << " - " << neighbor.evaluate() << endl;
+					// cout << "Vehicle " << vehicles[k].number << "(" << i << "): " << cost << " - " << neighbor.evaluate() << endl;
 					current = neighbor;
 				}
 				// cout << endl;
@@ -1210,7 +1210,7 @@ solution neighborhoods::full_extend_contract( solution& p_sol ) {
 					neighbor.set_cost(cost);
 					if(logs)
 						cout << "Applying extend_contract (2)" << endl;
-					cout << "Vehicle " << vehicles[k].number << "(" << i << "): " << cost << " - " << neighbor.evaluate() << endl;
+					// cout << "Vehicle " << vehicles[k].number << "(" << i << "): " << cost << " - " << neighbor.evaluate() << endl;
 					current = neighbor;
 				}
 				// cout << endl;

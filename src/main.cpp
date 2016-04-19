@@ -47,10 +47,10 @@ int main(int argc, char* args[]) {
 	instance cars;
 	cars.read_data();
 
-	double alpha = 0.2;
+	double alpha = 0.25;
 	// unsigned max_it = cars.get_n() + (5 * cars.get_c());
 	unsigned max_it = 50;
-	unsigned max_ms_it = 10;
+	unsigned max_ms_it = 20;
 	logger logs(timer);
 	ils ILS(cars, max_ms_it, max_it, alpha, logs);
 	solution best = ILS.execute();
