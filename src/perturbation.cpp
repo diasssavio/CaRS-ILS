@@ -423,7 +423,7 @@ solution perturbation::execute( solution& p_sol ) {
 			perturbed = vehicle_swap(p_sol);
 			break;
     case 3:
-			printf("Vehicle Injection:\n");
+			// printf("Vehicle Injection:\n");
 			// perturbed = outter_vehicle_swap(p_sol);
       perturbed = vehicle_injection(p_sol);
 			break;
