@@ -62,15 +62,16 @@ solution& ils::execute() {
 					// sol = neighbors.extend_contract(sol);
 					if(sol.get_cost() < best.get_cost())
 						best = sol;
-					// sol.show_data();
+					sol.show_data();
 					if((k + 1) < max_it) {
-						// printf("PERTURBATION:\n");
+						printf("PERTURBATION:\n");
 						sol = pert.execute(sol);
-						// sol.show_data();
+						sol.show_data();
 					}
-					// vector< pair< unsigned, unsigned> > pos = sol.get_pos();
-					// for(unsigned m = 0; m < pos.size(); m++)
-					// 	printf("%d->%d\n", pos[m].first, pos[m].second);
+					vector< pair< unsigned, unsigned> > pos = sol.get_pos();
+          vector< t_vec > veh = sol.get_vehicles();
+					for(unsigned m = 0; m < pos.size(); m++)
+						printf("%d: %d (%d) -> %d (%d)\n", veh[m].number, pos[m].first, veh[m].begin, pos[m].second, veh[m].end);
 				}
 			}
 		}

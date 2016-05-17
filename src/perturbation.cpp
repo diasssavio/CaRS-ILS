@@ -236,24 +236,17 @@ solution perturbation::outter_vehicle_swap( solution& p_sol ) {
 
 	// Removing the edges & fee from the previous vehicle
 	cost -= rates[ vehicles[k].number ][ route [ v_pos[k].first ] ][ route[aux] ];
-	// cost -= rates[ vehicles[l].number ][ route [ v_pos[l].first ] ][ route[aux] ];
-	// for(unsigned i = v_pos[k].first; i < v_pos[k].second; i++)
-	// 	cost -= distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
 	for(unsigned i = v_pos[k].first; i < v_pos[k].second - 1; i++)
 		cost -= distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
 	cost -= distances[ vehicles[k].number ][ route[ v_pos[k].second - 1 ] ][ route[aux] ];
 
 	// Adding the edges from the possible exchange in vehicles
 	cost += rates[ not_used[l] ][ route [ v_pos[k].first ] ][ route[aux] ];
-	// cost += rates[ vehicles[k].number ][ route [ v_pos[l].first ] ][ route[aux] ];
-	// for(unsigned i = v_pos[k].first; i < v_pos[k].second; i++)
-	// 	cost += distances[ vehicles[l].number ][ route[i] ][ route[i + 1] ];
 	for(unsigned i = v_pos[k].first; i < v_pos[k].second - 1; i++)
 		cost += distances[ not_used[l] ][ route[i] ][ route[i + 1] ];
 	cost += distances[ not_used[l] ][ route[ v_pos[k].second - 1 ] ][ route[aux] ];
 
   vehicles[k].number = not_used[l];
-	// swap(vehicles[k].number, vehicles[l].number);
 
 	solution perturbed(cars);
 	perturbed.set_route(route);
@@ -324,6 +317,93 @@ solution perturbation::vehicle_swap( solution& p_sol ) {
 	return perturbed;
 }
 
+solution perturbation::vehicle_injection( solution& p_sol ) {
+  vector< t_vec > vehicles(p_sol.get_vehicles());
+  unsigned c = cars.get_c();
+
+  if(vehicles.size() == c) {
+    solution to_ret;
+    to_ret = vehicle_swap(p_sol);
+    return to_ret;
+  }
+
+	unsigned n = cars.get_n();
+	vector< pair< unsigned, unsigned> > v_pos(p_sol.get_pos());
+	vector< matrix_2d > distances = cars.get_distances();
+	vector< matrix_2d > rates = cars.get_return_rates();
+	vector< unsigned > route = p_sol.get_route();
+
+	// Raffling the two vehicles to be perturbed
+	unsigned k = genrand_int32() % vehicles.size();
+  while(p_sol.get_trip_size(k) <= 1) {
+    if((k + 1) < vehicles.size()) k++;
+		else k--;
+  }
+  vector< unsigned > not_used = p_sol.not_used();
+	unsigned l = genrand_int32() % not_used.size();
+
+  // Raffling number of vertices to be assigned to inserted vehicle and its beginning place
+  unsigned n_vertices = 1 + (genrand_int32() % (p_sol.get_trip_size(k) - 1));
+  unsigned start_place = genrand_int32() % 2;
+
+	// Aux variable to calculate the last edge of the cycle
+	unsigned aux = v_pos[k].second;
+	if(aux == n) aux = 0;
+
+	double cost = p_sol.get_cost();
+
+	// Removing the edges & fee from the previous vehicle
+	cost -= rates[ vehicles[k].number ][ route[ v_pos[k].first ] ][ route[aux] ];
+  if(!start_place) {
+  	for(unsigned i = v_pos[k].first; i < v_pos[k].first + n_vertices; i++)
+  		cost -= distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
+  } else {
+    for(unsigned i = v_pos[k].first + n_vertices; i < v_pos[k].second - 1; i++)
+      cost -= distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
+    cost -= distances[ vehicles[k].number ][ route[ v_pos[k].second - 1 ] ][ route[aux] ];
+  }
+
+	// Adding the edges & fees from the new & previous vehicles
+  if(!start_place) {
+    cost += rates[ not_used[l] ][ route[ v_pos[k].first ] ][ route[ v_pos[k].first + n_vertices ] ];
+    cost += rates[ vehicles[k].number ][ route[ v_pos[k].first + n_vertices ] ][ route[aux] ];
+    for(unsigned i = v_pos[k].first; i < v_pos[k].first + n_vertices; i++)
+  		cost += distances[ not_used[l] ][ route[i] ][ route[i + 1] ];
+  } else {
+    cost += rates[ vehicles[k].number ][ route[ v_pos[k].first ] ][ route[ v_pos[k].first + n_vertices ] ];
+    cost += rates[ not_used[l] ][ route[ v_pos[k].first + n_vertices ] ][ route[aux] ];
+    for(unsigned i = v_pos[k].first + n_vertices; i < v_pos[k].second - 1; i++)
+  		cost += distances[ not_used[l] ][ route[i] ][ route[i + 1] ];
+  	cost += distances[ not_used[l] ][ route[ v_pos[k].second - 1 ] ][ route[aux] ];
+  }
+
+  // Updating solution information
+  t_vec temp;
+  temp.number = not_used[l];
+  if(!start_place) {
+    temp.begin = route[ v_pos[k].first ];
+    temp.end = route[ v_pos[k].first + n_vertices ];
+    vehicles[k].begin = route[ v_pos[k].first + n_vertices ];
+    vehicles.insert(vehicles.begin() + k, temp);
+  } else {
+    temp.begin = route[ v_pos[k].first + n_vertices ];
+    temp.end = route[aux];
+    vehicles[k].end = route[ v_pos[k].first + n_vertices ];
+    vehicles.insert(vehicles.begin() + (k + 1), temp);
+  }
+  v_pos.insert(v_pos.begin() + (k + 1), make_pair(v_pos[k].first + n_vertices, v_pos[k].second));
+  v_pos[k].second = v_pos[k].first + n_vertices;
+
+	solution perturbed(cars);
+	perturbed.set_route(route);
+	perturbed.set_vehicles(vehicles);
+	perturbed.set_pos(v_pos);
+	perturbed.set_cost(cost);
+  // perturbed.set_cost(perturbed.evaluate());
+
+	return perturbed;
+}
+
 solution perturbation::double_bridge( solution& p_sol ) { }
 
 solution perturbation::execute( solution& p_sol ) {
@@ -343,8 +423,9 @@ solution perturbation::execute( solution& p_sol ) {
 			perturbed = vehicle_swap(p_sol);
 			break;
     case 3:
-			// printf("Outter Vehicle Swap:\n");
-			perturbed = outter_vehicle_swap(p_sol);
+			printf("Vehicle Injection:\n");
+			// perturbed = outter_vehicle_swap(p_sol);
+      perturbed = vehicle_injection(p_sol);
 			break;
 		// case 3:
 		// 	printf("Double Bridge:\n");

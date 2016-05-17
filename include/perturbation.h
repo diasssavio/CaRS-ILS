@@ -31,6 +31,7 @@ public:
 	solution multiple_swap( solution&, unsigned );
   solution outter_vehicle_swap( solution& );
 	solution vehicle_swap( solution& );
+  solution vehicle_injection( solution& );
 	solution double_bridge( solution& );
 
 	solution execute( solution& );
