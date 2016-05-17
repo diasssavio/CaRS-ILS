@@ -139,3 +139,16 @@ void solution::show_latex( char* filename, char* out_file ) {
 }
 
 unsigned solution::get_trip_size( unsigned c_index ) { return v_pos[c_index].second - v_pos[c_index].first; }
+
+bool solution::is_used( unsigned c_number ) {
+  for(unsigned i = 0; i < vehicles.size(); i++)
+    if(vehicles[i].number == c_number) return true;
+  return false;
+}
+
+vector< unsigned > solution::not_used() {
+  vector< unsigned > not_used_veh;
+  for(unsigned i = 0; i < cars.get_c(); i++)
+    if(!is_used(i)) not_used_veh.push_back(i);
+  return not_used_veh;
+}

@@ -10,7 +10,7 @@
 
 int myrandom( unsigned i ) { return genrand_int32() % i; }
 
-neighborhoods::neighborhoods( instance& _cars, bool _logs ) { 
+neighborhoods::neighborhoods( instance& _cars, bool _logs ) {
 	this->cars = _cars;
 	this->logs = _logs;
 }
@@ -42,7 +42,7 @@ solution neighborhoods::i_swap_one( solution& p_sol ) {
 				cost -= distances[ vehicles[k].number ][ route[i - 1] ][ route[i] ];
 				cost -= distances[ vehicles[k].number ][ route[j] ][ route[aux] ];
 				cost -= distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
-				
+
 				// If i & j are adjacent
 				if(j == i + 1)
 					cost += distances[ vehicles[k].number ][ route[j] ][ route[i] ];
@@ -51,7 +51,7 @@ solution neighborhoods::i_swap_one( solution& p_sol ) {
 					cost += distances[ vehicles[k].number ][ route[j - 1] ][ route[i] ];
 					cost -= distances[ vehicles[k].number ][ route[j - 1] ][ route[j] ];
 				}
-				
+
 				// If the cost is smaller than the current, the change is applied
 				// cout << cost << " - " << neighbor.evaluate() << " = " << cost - neighbor.evaluate() << endl;
 				if(cost < current_cost) {
@@ -102,7 +102,7 @@ solution neighborhoods::i_swap_two( solution& p_sol ) {
 				cost -= distances[ vehicles[k].number ][ route[i - 1] ][ route[i] ];
 				cost -= distances[ vehicles[k].number ][ route[j + 1] ][ route[aux] ];
 				cost -= distances[ vehicles[k].number ][ route[i + 1] ][ route[i + 2] ];
-				
+
 				// If i & j are adjacent
 				if(j == i + 2)
 					cost += distances[ vehicles[k].number ][ route[j + 1] ][ route[i] ];
@@ -111,7 +111,7 @@ solution neighborhoods::i_swap_two( solution& p_sol ) {
 					cost += distances[ vehicles[k].number ][ route[j - 1] ][ route[i] ];
 					cost -= distances[ vehicles[k].number ][ route[j - 1] ][ route[j] ];
 				}
-				
+
 				// If the cost is smaller than the current, the change is applied
 				// cout << cost << " - " << neighbor.evaluate() << " = " << cost - neighbor.evaluate() << endl;
 				if(cost < current_cost) {
@@ -163,7 +163,7 @@ solution neighborhoods::i_swap_three( solution& p_sol ) {
 				cost -= distances[ vehicles[k].number ][ route[i - 1] ][ route[i] ];
 				cost -= distances[ vehicles[k].number ][ route[j + 2] ][ route[aux] ];
 				cost -= distances[ vehicles[k].number ][ route[i + 2] ][ route[i + 3] ];
-				
+
 				// If i & j are adjacent
 				if(j == i + 3)
 					cost += distances[ vehicles[k].number ][ route[j + 2] ][ route[i] ];
@@ -172,7 +172,7 @@ solution neighborhoods::i_swap_three( solution& p_sol ) {
 					cost += distances[ vehicles[k].number ][ route[j - 1] ][ route[i] ];
 					cost -= distances[ vehicles[k].number ][ route[j - 1] ][ route[j] ];
 				}
-				
+
 				// If the cost is smaller than the current, the change is applied
 				// cout << cost << " - " << neighbor.evaluate() << " = " << cost - neighbor.evaluate() << endl;
 				if(cost < current_cost) {
@@ -521,7 +521,7 @@ solution neighborhoods::o_swap_one( solution& p_sol ) {
 					cost -= distances[ vehicles[k].number ][ route[i - 1] ][ route[i] ];
 					cost -= distances[ vehicles[l].number ][ route[j - 1] ][ route[j] ];
 					cost -= distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
-					cost -= distances[ vehicles[l].number ][ route[j] ][ route[aux] ];					
+					cost -= distances[ vehicles[l].number ][ route[j] ][ route[aux] ];
 
 					// If the cost is smaller than the current, the change is applied
 					// cout << cost << " - " << neighbor.evaluate() << " = " << cost - neighbor.evaluate() << endl;
@@ -666,7 +666,7 @@ solution neighborhoods::o_swap_two_one( solution& p_sol ) {
 		if(k_swap > l_swap) {
 			route.erase(route.begin() + (i_swap + 1));
 			route.insert(route.begin() + (j_swap + 1), value);
-			
+
 			// Updating the position of the intermediate routes
 			for(unsigned k = l_swap + 1; k < k_swap; k++) {
 				v_pos[k].first++;
@@ -816,7 +816,7 @@ solution neighborhoods::o_shift_one( solution& p_sol ) {
 		if(k_shift > l_shift) {
 			route.erase(route.begin() + i_shift);
 			route.insert(route.begin() + (j_shift + 1), value);
-			
+
 			// Updating the position of the intermediate routes
 			for(unsigned k = l_shift + 1; k < k_shift; k++) {
 				v_pos[k].first++;
@@ -899,7 +899,7 @@ solution neighborhoods::o_shift_two( solution& p_sol ) {
 		if(k_shift > l_shift) {
 			route.erase(route.begin() + i_shift, route.begin() + (i_shift + 2));
 			route.insert(route.begin() + (j_shift + 1), values, values + 2);
-			
+
 			// Updating the position of the intermediate routes
 			for(unsigned k = l_shift + 1; k < k_shift; k++) {
 				v_pos[k].first += 2;
@@ -984,7 +984,7 @@ solution neighborhoods::o_shift_three( solution& p_sol ) {
 		if(k_shift > l_shift) {
 			route.erase(route.begin() + i_shift, route.begin() + (i_shift + 3));
 			route.insert(route.begin() + (j_shift + 1), values, values + 3);
-			
+
 			// Updating the position of the intermediate routes
 			for(unsigned k = l_shift + 1; k < k_shift; k++) {
 				v_pos[k].first += 3;
@@ -1017,7 +1017,7 @@ solution neighborhoods::o_shift_three( solution& p_sol ) {
 
 solution neighborhoods::exchange( solution& p_sol ) {
 	vector< t_vec > vehicles(p_sol.get_vehicles());
-	
+
 	if(vehicles.size() <= 1) return p_sol;
 
 	unsigned n = cars.get_n();
@@ -1127,7 +1127,7 @@ solution neighborhoods::full_extend_contract( solution& p_sol ) {
 					vector< t_vec > veh(vehicles);
 					veh[k].end = route[ v_pos[k].second ];
 					veh[k + 1].begin = route[ v_pos[k + 1].first ];
-					
+
 					solution neighbor(cars);
 					neighbor.set_route(route);
 					neighbor.set_vehicles(veh);
@@ -1141,7 +1141,8 @@ solution neighborhoods::full_extend_contract( solution& p_sol ) {
 				// cout << endl;
 			}
 
-			cout << route[ v_pos[k + 1].first ] << "->" << route[ aux ] << endl;
+      if(logs)
+			  cout << route[ v_pos[k + 1].first ] << "->" << route[ aux ] << endl;
 
 			// Evaluating the elimination of the vehicle k + 1 from the solution
 			cost -= distances[ vehicles[k + 1].number ][ route[ v_pos[k + 1].first ] ][ route[ aux ] ];
@@ -1293,7 +1294,7 @@ solution neighborhoods::extend_contract( solution& p_sol ) {
 					vector< t_vec > veh(vehicles);
 					veh[k].end = route[ v_pos[k].second ];
 					veh[k + 1].begin = route[ v_pos[k + 1].first ];
-					
+
 					solution neighbor(cars);
 					neighbor.set_route(route);
 					neighbor.set_vehicles(veh);
@@ -1593,16 +1594,16 @@ solution neighborhoods::outter_RVND( solution& p_sol ) {
 					cout << "Trying exchange...\n";
 				aux = exchange(to_return);
 				break;
-			case 8:
-				if(logs)
-					cout << "Trying extend_contract...\n";
-				aux = extend_contract(to_return);
-				break;
 			// case 8:
 			// 	if(logs)
-			// 		cout << "Trying full_extend_contract...\n";
-			// 	aux = full_extend_contract(to_return);
+			// 		cout << "Trying extend_contract...\n";
+			// 	aux = extend_contract(to_return);
 			// 	break;
+			case 8:
+				if(logs)
+					cout << "Trying full_extend_contract...\n";
+				aux = full_extend_contract(to_return);
+				break;
 		}
 
 		// If neighborhood find a better solution, the NL is updated

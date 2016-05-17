@@ -62,13 +62,15 @@ public:
 	const vector< t_vec >& get_vehicles() const;
 	const vector< pair< unsigned, unsigned> >& get_pos() const;
 	double get_cost();
-	
+
 	// Useful Methods
 	void show_data();
 	void show_latex( char*, char* );
 	double evaluate();
 	void find_pos();
 	unsigned get_trip_size( unsigned );
+  bool is_used( unsigned );
+  vector< unsigned > not_used();
 
 };
 

@@ -20,7 +20,11 @@ solution perturbation::multiple_shift( solution& p_sol, unsigned max_pert ) {
 
 	vector< t_vec > vehicles = p_sol.get_vehicles();
 
-	if(vehicles.size() <= 1) return p_sol;
+	if(vehicles.size() <= 1) {
+    solution to_ret;
+    to_ret = multiple_swap(p_sol, max_pert);
+    return to_ret;
+  }
 
 	vector< pair< unsigned, unsigned> > v_pos = p_sol.get_pos();
 	vector< unsigned > route(p_sol.get_route());
@@ -203,10 +207,71 @@ solution perturbation::multiple_swap( solution& p_sol, unsigned max_pert ) {
 	return perturbed;
 }
 
+solution perturbation::outter_vehicle_swap( solution& p_sol ) {
+	vector< t_vec > vehicles(p_sol.get_vehicles());
+  unsigned c = cars.get_c();
+
+  if(vehicles.size() == c) {
+    solution to_ret;
+    to_ret = multiple_swap(p_sol, 1);
+    return to_ret;
+  }
+
+	unsigned n = cars.get_n();
+	vector< pair< unsigned, unsigned> > v_pos = p_sol.get_pos();
+	vector< matrix_2d > distances = cars.get_distances();
+	vector< matrix_2d > rates = cars.get_return_rates();
+	vector< unsigned > route = p_sol.get_route();
+
+	// Raffling the two vehicles to be perturbed
+	unsigned k = genrand_int32() % vehicles.size();
+  vector< unsigned > not_used = p_sol.not_used();
+	unsigned l = genrand_int32() % not_used.size();
+
+	// Aux variable to calculate the last edge of the cycle
+	unsigned aux = v_pos[k].second;
+	if(aux == n) aux = 0;
+
+	double cost = p_sol.get_cost();
+
+	// Removing the edges & fee from the previous vehicle
+	cost -= rates[ vehicles[k].number ][ route [ v_pos[k].first ] ][ route[aux] ];
+	// cost -= rates[ vehicles[l].number ][ route [ v_pos[l].first ] ][ route[aux] ];
+	// for(unsigned i = v_pos[k].first; i < v_pos[k].second; i++)
+	// 	cost -= distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
+	for(unsigned i = v_pos[k].first; i < v_pos[k].second - 1; i++)
+		cost -= distances[ vehicles[k].number ][ route[i] ][ route[i + 1] ];
+	cost -= distances[ vehicles[k].number ][ route[ v_pos[k].second - 1 ] ][ route[aux] ];
+
+	// Adding the edges from the possible exchange in vehicles
+	cost += rates[ not_used[l] ][ route [ v_pos[k].first ] ][ route[aux] ];
+	// cost += rates[ vehicles[k].number ][ route [ v_pos[l].first ] ][ route[aux] ];
+	// for(unsigned i = v_pos[k].first; i < v_pos[k].second; i++)
+	// 	cost += distances[ vehicles[l].number ][ route[i] ][ route[i + 1] ];
+	for(unsigned i = v_pos[k].first; i < v_pos[k].second - 1; i++)
+		cost += distances[ not_used[l] ][ route[i] ][ route[i + 1] ];
+	cost += distances[ not_used[l] ][ route[ v_pos[k].second - 1 ] ][ route[aux] ];
+
+  vehicles[k].number = not_used[l];
+	// swap(vehicles[k].number, vehicles[l].number);
+
+	solution perturbed(cars);
+	perturbed.set_route(route);
+	perturbed.set_vehicles(vehicles);
+	perturbed.set_pos(v_pos);
+	perturbed.set_cost(cost);
+
+	return perturbed;
+}
+
 solution perturbation::vehicle_swap( solution& p_sol ) {
 	vector< t_vec > vehicles(p_sol.get_vehicles());
-	
-	if(vehicles.size() <= 1) return p_sol;
+
+	if(vehicles.size() <= 1) {
+    solution to_ret;
+    to_ret = multiple_swap(p_sol, 1);
+    return to_ret;
+  }
 
 	unsigned n = cars.get_n();
 	vector< pair< unsigned, unsigned> > v_pos(p_sol.get_pos());
@@ -259,12 +324,10 @@ solution perturbation::vehicle_swap( solution& p_sol ) {
 	return perturbed;
 }
 
-solution perturbation::double_bridge( solution& p_sol ) {
-
-}
+solution perturbation::double_bridge( solution& p_sol ) { }
 
 solution perturbation::execute( solution& p_sol ) {
-	unsigned perturb = genrand_int32() % 3;
+	unsigned perturb = genrand_int32() % 4;
 	solution perturbed;
 	switch(perturb) {
 		case 0:
@@ -279,10 +342,14 @@ solution perturbation::execute( solution& p_sol ) {
 			// printf("Vehicle Swap:\n");
 			perturbed = vehicle_swap(p_sol);
 			break;
-		case 3:
-			// printf("Double Bridge:\n");
-			perturbed = double_bridge(p_sol);
+    case 3:
+			// printf("Outter Vehicle Swap:\n");
+			perturbed = outter_vehicle_swap(p_sol);
 			break;
+		// case 3:
+		// 	printf("Double Bridge:\n");
+		// 	perturbed = double_bridge(p_sol);
+		// 	break;
 	}
 
 	return perturbed;

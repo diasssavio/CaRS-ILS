@@ -19,7 +19,7 @@
 #include <limits>
 
 class perturbation {
-private:	
+private:
 	// Input instance
 	instance cars;
 
@@ -29,11 +29,12 @@ public:
 
 	solution multiple_shift( solution&, unsigned );
 	solution multiple_swap( solution&, unsigned );
+  solution outter_vehicle_swap( solution& );
 	solution vehicle_swap( solution& );
 	solution double_bridge( solution& );
 
 	solution execute( solution& );
-	
+
 };
 
 #endif /* PERTURBATION_H_ */
