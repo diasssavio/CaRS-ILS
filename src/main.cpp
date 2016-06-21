@@ -59,10 +59,6 @@ int main(int argc, char* args[]) {
 	printf("BEST FOUND SOLUTION -- %.2lf:\n", timer.getStopTime());
 	best.show_data();
 
-	// vector< pair< unsigned, unsigned> > pos = best.get_pos();
-	// for(unsigned i = 0; i < pos.size(); i++)
-	// 	printf("%d %d\n", pos[i].first, pos[i].second);
-
 	if(argc >= 3)
 		best.show_latex(args[2], "plot.tex");
 

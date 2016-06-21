@@ -18,3 +18,9 @@ void logger::make_log( double cost ) {
 	it_log.push_back(make_pair(cost, ++iteration));
 	times.push_back(((double) timer.getMilliSpan() / 1000));
 }
+
+void logger::print_log() {
+	printf("MULTI-START ITERATION LOGS:\n");
+	for(unsigned i = 0; i < it_log.size(); i++)
+		printf("%d: Cost: %.2lf\tTime:%.2lf\n", it_log[i].second, it_log[i].first, times[i]);
+}

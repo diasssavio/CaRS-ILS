@@ -37,8 +37,32 @@ solution& ils::execute() {
 	perturbation pert(cars);
 	solution sol(cars);
 
-	subsets(1, cars.get_c());
+	vector< unsigned > vehicles;
+	for(unsigned k = 0; k < cars.get_c(); k++)
+		vehicles.push_back(k);
+
 	bool first = true;
+	for(unsigned i = 0; i < max_ms_it; i++) {
+		sol = cons.generate_sol(vehicles);
+		if(first) {
+			best = sol;
+			first = false;
+		}
+		for(unsigned k = 0; k < max_it; k++) {
+			sol = neighbors.execute(sol);
+			if(sol.get_cost() < best.get_cost())
+				best = sol;
+			if((k + 1) < max_it) {
+				sol = pert.execute(sol);
+			}
+		}
+		// Adding the best solution for MS iterations
+		logs.make_log(best.get_cost());
+	}
+
+	logs.print_log();
+
+	/*subsets(1, cars.get_c());
 	for(unsigned i = 0; i < sets.size() - 1; i++) {
 		// printf("{");
 		for(unsigned j = 0; j < sets[i].size(); j++)
@@ -75,7 +99,7 @@ solution& ils::execute() {
 				}
 			}
 		}
-	}
+	}*/
 
 	return best;
 }

@@ -35,7 +35,9 @@ public:
 	virtual ~logger();
 
 	void make_log( double );
-	
+
+	void print_log();
+
 };
 
 #endif /* LOGGER_H_ */
