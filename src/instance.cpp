@@ -65,6 +65,38 @@ void instance::read_data() {
 	}
 }
 
+void instance::read_from_file(const string& file_name) {
+  ifstream _file;
+  _file.open(file_name.c_str(), std::ifstream::in);
+
+  if(_file.is_open()) {
+    _file >> n;
+    _file >> c;
+
+    distances = vector< matrix_2d >(c);
+    for(unsigned k = 0; k < c; k++) {
+  		distances[k] = matrix_2d(n);
+  		for(unsigned i = 0; i < n; i++) {
+  			distances[k][i] = vector< double >(n);
+  			for(unsigned j = 0; j < n; j++)
+          _file >> distances[k][i][j];
+      }
+    }
+
+    return_rates = vector< matrix_2d >(c);
+  	for(unsigned k = 0; k < c; k++) {
+  		return_rates[k] = matrix_2d(n);
+  		for(unsigned i = 0; i < n; i++) {
+  			return_rates[k][i] = vector< double >(n);
+  			for(unsigned j = 0; j < n; j++)
+  				_file >> return_rates[k][i][j];
+  		}
+  	}
+
+    _file.close();
+  }
+}
+
 void instance::show_data() {
 	printf("Number of points & Vehicles: %d %d\n\n", n, c);
 	printf("Distances matrix:\n");

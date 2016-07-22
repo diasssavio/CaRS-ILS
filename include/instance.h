@@ -11,6 +11,7 @@
 
 #include <cstdio>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -46,6 +47,7 @@ public:
 
 	// Useful Methods
 	void read_data();
+  void read_from_file(const string&);
 	void show_data();
 };
 

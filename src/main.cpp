@@ -38,14 +38,15 @@ int main(int argc, char* args[]) {
 	timer.start();
 
 	unsigned long seed = time(NULL);
-	if(argc >= 2)
-		seed = string_to< unsigned long >(args[1]);
+	if(argc >= 3)
+		seed = string_to< unsigned long >(args[2]);
 	// time_t seed = time(NULL);
 	// srand(seed);
 	init_genrand(seed);
 
 	instance cars;
-	cars.read_data();
+	// cars.read_data();
+  cars.read_from_file(args[1]);
 
 	double alpha = 0.25;
 	// unsigned max_it = cars.get_n() + (5 * cars.get_c());
