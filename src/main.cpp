@@ -48,10 +48,17 @@ int main(int argc, char* args[]) {
 	// cars.read_data();
   cars.read_from_file(args[1]);
 
-	double alpha = 0.25;
+  double alpha = 0.25;
 	// unsigned max_it = cars.get_n() + (5 * cars.get_c());
 	unsigned max_it = 50;
 	unsigned max_ms_it = 20;
+
+  if(argc >= 4) {
+    alpha = string_to< double >(args[3]);
+    max_it = string_to< unsigned >(args[4]);
+    max_ms_it = string_to< unsigned >(args[5]);
+  }
+
 	logger logs(timer);
 	ils ILS(cars, max_ms_it, max_it, alpha, logs);
 	solution best = ILS.execute();
@@ -60,8 +67,8 @@ int main(int argc, char* args[]) {
 	printf("BEST FOUND SOLUTION -- %.2lf:\n", timer.getStopTime());
 	best.show_data();
 
-	if(argc >= 3)
-		best.show_latex(args[2], "plot.tex");
+	// if(argc >= 3)
+	// 	best.show_latex(args[2], "plot.tex");
 
 	return 0;
 }
