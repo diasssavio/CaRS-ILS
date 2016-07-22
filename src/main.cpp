@@ -63,9 +63,10 @@ int main(int argc, char* args[]) {
 	ils ILS(cars, max_ms_it, max_it, alpha, logs);
 	solution best = ILS.execute();
 	timer.stop();
+  printf("BEST %.0lf TIME %.2lf", best.get_cost(), timer.getStopTime());
 	// printf("%.2lf;%.2lf;", best.get_cost(), timer.getStopTime());
-	printf("BEST FOUND SOLUTION -- %.2lf:\n", timer.getStopTime());
-	best.show_data();
+	// printf("BEST FOUND SOLUTION -- %.2lf:\n", timer.getStopTime());
+	// best.show_data();
 
 	// if(argc >= 3)
 	// 	best.show_latex(args[2], "plot.tex");

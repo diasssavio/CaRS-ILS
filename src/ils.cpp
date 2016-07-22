@@ -60,7 +60,7 @@ solution& ils::execute() {
 		logs.make_log(best.get_cost());
 	}
 
-	logs.print_log();
+	// logs.print_log();
 
 	/*subsets(1, cars.get_c());
 	for(unsigned i = 0; i < sets.size() - 1; i++) {
