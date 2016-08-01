@@ -33,7 +33,7 @@ private:
 	unsigned max_it;
 	unsigned max_ms_it;
 	double alpha;
-	
+
 	// Input instance
 	instance cars;
 
@@ -41,7 +41,7 @@ private:
 	solution best;
 
 	// Logs
-	logger logs;
+	logger* logs;
 
 	// Subsets generation
 	int conj[32];
@@ -50,11 +50,11 @@ private:
 	void subsets( unsigned, unsigned );
 
 public:
-	ils( instance&, unsigned, unsigned, double, logger& );
+	ils( instance&, unsigned, unsigned, double, logger* );
 	virtual ~ils();
 
 	solution& execute();
-	
+
 };
 
 #endif /* ILS_H_ */

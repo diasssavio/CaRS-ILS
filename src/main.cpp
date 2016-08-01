@@ -48,10 +48,13 @@ int main(int argc, char* args[]) {
 	// cars.read_data();
   cars.read_from_file(args[1]);
 
-  double alpha = 0.25;
-	// unsigned max_it = cars.get_n() + (5 * cars.get_c());
-	unsigned max_it = 50;
-	unsigned max_ms_it = 20;
+  double alpha = 0.47;
+	unsigned max_it = 61;
+	unsigned max_ms_it = 28;
+
+  // double alpha = 0.25;
+	// unsigned max_it = 50;
+	// unsigned max_ms_it = 20;
 
   if(argc >= 4) {
     alpha = string_to< double >(args[3]);
@@ -59,12 +62,13 @@ int main(int argc, char* args[]) {
     max_ms_it = string_to< unsigned >(args[5]);
   }
 
-	logger logs(timer);
+	logger* logs = new logger(timer);
 	ils ILS(cars, max_ms_it, max_it, alpha, logs);
 	solution best = ILS.execute();
 	timer.stop();
-  printf("BEST %.0lf TIME %.2lf", best.get_cost(), timer.getStopTime());
+  // printf("BEST %.0lf TIME %.2lf", best.get_cost(), timer.getStopTime());
 	// printf("%.2lf;%.2lf;", best.get_cost(), timer.getStopTime());
+  printf("%.2lf;%.2lf;%.2lf;", best.get_cost(), logs->best_time(), timer.getStopTime());
 	// printf("BEST FOUND SOLUTION -- %.2lf:\n", timer.getStopTime());
 	// best.show_data();
 

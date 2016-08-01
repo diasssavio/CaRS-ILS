@@ -24,3 +24,13 @@ void logger::print_log() {
 	for(unsigned i = 0; i < it_log.size(); i++)
 		printf("%d: Cost: %.2lf\tTime:%.2lf\n", it_log[i].second, it_log[i].first, times[i]);
 }
+
+double logger::best_time() {
+  double min_time = 0.0;
+	for(unsigned i = 0; i < it_log.size() - 1; i++) {
+		if(it_log[i].first == it_log[ it_log.size() - 1 ].first && min_time == 0.0)
+			min_time = times[i];
+	}
+
+  return min_time;
+}

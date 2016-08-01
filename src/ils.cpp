@@ -8,7 +8,7 @@
 
 #include "../include/ils.h"
 
-ils::ils( instance& _cars, unsigned _ms_it, unsigned _it, double _alpha, logger& _logs ) : max_it(_it), max_ms_it(_ms_it), alpha(_alpha) {
+ils::ils( instance& _cars, unsigned _ms_it, unsigned _it, double _alpha, logger* _logs ) : max_it(_it), max_ms_it(_ms_it), alpha(_alpha) {
 	this->cars = _cars;
 	this->logs = _logs;
 }
@@ -57,7 +57,7 @@ solution& ils::execute() {
 			}
 		}
 		// Adding the best solution for MS iterations
-		logs.make_log(best.get_cost());
+		logs->make_log(best.get_cost());
 	}
 
 	// logs.print_log();

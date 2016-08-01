@@ -38,6 +38,8 @@ public:
 
 	void print_log();
 
+  double best_time();
+
 };
 
 #endif /* LOGGER_H_ */

@@ -1,11 +1,11 @@
 #!/bin/bash
-for j in instances/special_insts/*.txt
+for j in instances/insts/euclidean/small_insts/*.txt
 do
 	FILE=$(basename "$j" .txt)
 	echo "$FILE"
 	for i in $(seq 30)
 	do
-		./CaRS-ILS $i < $j >> logs/$FILE.csv
+		./CaRS-ILS $j $i >> logs/$FILE.csv
 		echo "$i...ok!"
 	done
 done

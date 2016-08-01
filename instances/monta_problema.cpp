@@ -189,7 +189,7 @@ void leInstancia(char *fname)
   	char buf[80];
 	char tipo[10];			// tipo de instancia (EUC_2D ou EXPLICIT)
 	char formato[10];		// formato da instancia (FULL_MATRIX ou VECTOR)
-   	char nomeArqSaida[100]="dados_";
+   	char nomeArqSaida[100]="";
 
 
 
