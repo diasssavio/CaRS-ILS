@@ -64,7 +64,7 @@ int main(int argc, char* args[]) {
 
 	unsigned n_neigh = 0;
 	if(argc >= 4)
-		n_neigh = string_to< unsigned >(args[3]);
+		n_neigh = string_to< unsigned >(args[3]) - 1;
 
 	logger* logs = new logger(timer);
 	ils ILS(cars, max_ms_it, max_it, alpha, logs);
