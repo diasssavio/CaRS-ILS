@@ -32,10 +32,11 @@ CPLEXDIR	  = /opt/ibm/ILOG/CPLEX_Studio1261/cplex
 CONCERTDIR	  = /opt/ibm/ILOG/CPLEX_Studio1261/concert
 
 # Compiler
-CCC = g++-4.8
+# CCC = g++-4.8
+CCC = g++
 
 # Compilation parameters (Add afterward: --coverage -pg -ftree-vectorize -mfpmath=sse -march=native)
-CCOPT = -std=gnu++0x -O3 -ftree-vectorize -mfpmath=sse -march=native -march=native -flto -g -m64 -fPIC -fexceptions -DNDEBUG -DIL_STD
+CCOPT = -std=gnu++0x -O3 -ftree-vectorize -mfpmath=sse -march=native -flto -g -m64 -fPIC -fexceptions -DNDEBUG -DIL_STD
 
 # Cplex static libraries directory
 CPLEXLIBDIR   = $(CPLEXDIR)/lib/$(SYSTEM)/$(LIBFORMAT)
@@ -117,26 +118,8 @@ $(TMP_ILS)/ils.o: $(SRC)/ils.cpp $(INCLUDE)/ils.h
 $(TMP_ILS)/main.o: $(SRC)/main.cpp
 	$(CCC) -c $(CCFLAGS) $(SRC)/main.cpp -o $(TMP_ILS)/main.o
 
-########################## OBJECT's LIBRARIES #######################################################
-# CONFIGURATION
-$(TMP_ILS)/Configuration.o: $(TMP_ILS)/FWChrono.o $(TMP_ILS)/mt19937ar.o
-	gcc -Wl,-r $(TMP_ILS)/FWChrono.o $(TMP_ILS)/mt19937ar.o -o $(TMP_ILS)/Configuration.o -nostdlib
-
-# STRUCTURE & TIMER
-$(TMP_ILS)/Structure.o:  $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o $(TMP_ILS)/logger.o
-	gcc -Wl,-r $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o $(TMP_ILS)/logger.o -o $(TMP_ILS)/Structure.o -nostdlib
-	# gcc -Wl,-r $(TMP_ILS)/instance.o -o $(TMP_ILS)/Structure.o -nostdlib
-
-# ILS
-$(TMP_ILS)/ILS.o: $(TMP_ILS)/constructor.o $(TMP_ILS)/neighborhoods.o $(TMP_ILS)/perturbation.o $(TMP_ILS)/ils.o
-	gcc -Wl,-r $(TMP_ILS)/constructor.o $(TMP_ILS)/neighborhoods.o $(TMP_ILS)/perturbation.o $(TMP_ILS)/ils.o -o $(TMP_ILS)/ILS.o -nostdlib
-# $(TMP_ILS)/ILS.o: $(TMP_ILS)/ils.o
-# 	gcc -Wl,-r $(TMP_ILS)/ils.o -o $(TMP_ILS)/ILS.o -nostdlib
-
 ########################## LINKANDO TUDO ########################################################
 
-$(CPP_EX): $(TMP_ILS)/Configuration.o $(TMP_ILS)/Structure.o $(TMP_ILS)/ILS.o $(TMP_ILS)/main.o
-	$(CCC)  $(CCFLAGS) $(TMP_ILS)/Configuration.o $(TMP_ILS)/Structure.o $(TMP_ILS)/ILS.o $(TMP_ILS)/main.o -L$(TMP_STATIC) -o $(CPP_EX)
-# $(CPP_EX): $(TMP_ILS)/Configuration.o $(TMP_ILS)/Structure.o $(TMP_ILS)/main.o
-# 	$(CCC)  $(CCFLAGS) $(TMP_ILS)/Configuration.o $(TMP_ILS)/Structure.o $(TMP_ILS)/main.o -L$(TMP_STATIC) -o $(CPP_EX)
+$(CPP_EX): $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o $(TMP_ILS)/FWChrono.o $(TMP_ILS)/mt19937ar.o $(TMP_ILS)/logger.o $(TMP_ILS)/constructor.o $(TMP_ILS)/neighborhoods.o $(TMP_ILS)/perturbation.o $(TMP_ILS)/ils.o $(TMP_ILS)/main.o
+	$(CCC)  $(CCFLAGS) $(TMP_ILS)/instance.o $(TMP_ILS)/solution.o $(TMP_ILS)/FWChrono.o $(TMP_ILS)/mt19937ar.o $(TMP_ILS)/logger.o $(TMP_ILS)/constructor.o $(TMP_ILS)/neighborhoods.o $(TMP_ILS)/perturbation.o $(TMP_ILS)/ils.o $(TMP_ILS)/main.o -L$(TMP_STATIC) -o $(CPP_EX)
 #endif
