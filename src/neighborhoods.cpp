@@ -10,9 +10,10 @@
 
 int myrandom( unsigned i ) { return genrand_int32() % i; }
 
-neighborhoods::neighborhoods( instance& _cars, bool _logs ) {
+neighborhoods::neighborhoods( instance& _cars, logger* _log, bool _logs ) {
 	this->cars = _cars;
 	this->logs = _logs;
+	this->log_system = _log;
 }
 
 neighborhoods::~neighborhoods() { }
@@ -1526,6 +1527,7 @@ solution neighborhoods::inner_RVND( solution& p_sol ) {
 
 		// If neighborhood find a better solution, the NL is updated
 		if(aux.get_cost() < to_return.get_cost()) {
+			log_system->make_general_log(i_NL[i] + 9, to_return.get_cost(), aux.get_cost());
 			to_return = aux;
 			i = 0;
 		} else i++;
@@ -1608,6 +1610,7 @@ solution neighborhoods::outter_RVND( solution& p_sol ) {
 
 		// If neighborhood find a better solution, the NL is updated
 		if(aux.get_cost() < to_return.get_cost()) {
+			log_system->make_general_log(o_NL[i], to_return.get_cost(), aux.get_cost());
 			to_return = aux;
 			to_return = inner_RVND(to_return);
 			i = 0;

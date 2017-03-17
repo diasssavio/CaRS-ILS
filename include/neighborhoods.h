@@ -13,6 +13,7 @@
 #include "solution.h"
 #include "constructor.h"
 #include "mt19937ar.h"
+#include "logger.h"
 
 #include <utility>
 #include <algorithm>
@@ -24,7 +25,7 @@ using namespace std;
 int myrandom( unsigned );
 
 class neighborhoods {
-private:	
+private:
 	// Input instance
 	instance cars;
 
@@ -32,12 +33,13 @@ private:
 	vector< unsigned > o_NL;
 
 	bool logs;
+	logger* log_system;
 
 	// Result best solution
 	solution best;
 
 public:
-	neighborhoods( instance&, bool = false );
+	neighborhoods( instance&, logger* = NULL, bool = false );
 	virtual ~neighborhoods();
 
 	// TSP (route) Neighborhoods -- INNER ROUTES
@@ -81,7 +83,7 @@ public:
 
 	solution inner_RVND( solution& );
 	solution outter_RVND( solution& );
-	
+
 };
 
 #endif /* NEIGHBORHOODS_H_ */

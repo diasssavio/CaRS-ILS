@@ -56,21 +56,35 @@ int main(int argc, char* args[]) {
 	// unsigned max_it = 50;
 	// unsigned max_ms_it = 20;
 
-  if(argc >= 4) {
-    alpha = string_to< double >(args[3]);
-    max_it = string_to< unsigned >(args[4]);
-    max_ms_it = string_to< unsigned >(args[5]);
-  }
+  // if(argc >= 4) {
+  //   alpha = string_to< double >(args[3]);
+  //   max_it = string_to< unsigned >(args[4]);
+  //   max_ms_it = string_to< unsigned >(args[5]);
+  // }
+
+	unsigned n_neigh = 0;
+	if(argc >= 4)
+		n_neigh = string_to< unsigned >(args[3]);
 
 	logger* logs = new logger(timer);
 	ils ILS(cars, max_ms_it, max_it, alpha, logs);
-	solution best = ILS.execute();
+	// solution best = ILS.execute();
+	solution best = ILS.execute_neighborhood(n_neigh);
 	timer.stop();
-  printf("BEST %.0lf TIME %.2lf", best.get_cost(), timer.getStopTime());
+	printf("%.2lf;%.2lf;%d;%.2lf;\n", best.get_cost(), logs->best_time(), logs->get_individual_log(), logs->get_individual_average());
+  // printf("BEST %.0lf TIME %.2lf\n", best.get_cost(), timer.getStopTime());
+
 	// printf("%.2lf;%.2lf;", best.get_cost(), timer.getStopTime());
   // printf("%.2lf;%.2lf;%.2lf;", best.get_cost(), logs->best_time(), timer.getStopTime());
 	// printf("BEST FOUND SOLUTION -- %.2lf:\n", timer.getStopTime());
 	// best.show_data();
+
+	// unsigned* n_found_sol = logs->get_n_found_sol();
+	// double* average_gainz = logs->get_average();
+	//
+	// for(unsigned i = 0; i < 17; i++)
+	// 	printf("Neighborhood #%d: %d %.2lf\n", i + 1, n_found_sol[i], average_gainz[i]);
+	// printf("Neighborhood #%d: %d %.2lf\n", n_neigh, logs->get_individual_log(), logs->get_individual_average());
 
 	// if(argc >= 3)
 	// 	best.show_latex(args[2], "plot.tex");

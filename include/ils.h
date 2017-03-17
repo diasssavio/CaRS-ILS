@@ -55,6 +55,8 @@ public:
 
 	solution& execute();
 
+	solution& execute_neighborhood( unsigned );
+
 };
 
 #endif /* ILS_H_ */
