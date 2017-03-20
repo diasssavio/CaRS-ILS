@@ -68,10 +68,20 @@ int main(int argc, char* args[]) {
 
 	logger* logs = new logger(timer);
 	ils ILS(cars, max_ms_it, max_it, alpha, logs);
+
+	// Executing ILS total
 	// solution best = ILS.execute();
+	// timer.stop();
+	// unsigned* n_found_sol = logs->get_n_found_sol();
+	// double* average_gainz = logs->get_average();
+	// for(unsigned i = 0; i < 17; i++)
+	// 	printf("%s;%d;%d;%.2lf;\n", args[1], i + 1, n_found_sol[i], average_gainz[i]);
+
+	// Executing individual neighborhoods
 	solution best = ILS.execute_neighborhood(n_neigh);
 	timer.stop();
-	printf("%.2lf;%.2lf;%d;%.2lf;\n", best.get_cost(), logs->best_time(), logs->get_individual_log(), logs->get_individual_average());
+	printf("%s;%d;%.2lf;%.2lf;%d;%.2lf;\n", args[1], n_neigh + 1, best.get_cost(), logs->best_time(), logs->get_individual_log(), logs->get_individual_average());
+
   // printf("BEST %.0lf TIME %.2lf\n", best.get_cost(), timer.getStopTime());
 
 	// printf("%.2lf;%.2lf;", best.get_cost(), timer.getStopTime());
@@ -79,9 +89,6 @@ int main(int argc, char* args[]) {
 	// printf("BEST FOUND SOLUTION -- %.2lf:\n", timer.getStopTime());
 	// best.show_data();
 
-	// unsigned* n_found_sol = logs->get_n_found_sol();
-	// double* average_gainz = logs->get_average();
-	//
 	// for(unsigned i = 0; i < 17; i++)
 	// 	printf("Neighborhood #%d: %d %.2lf\n", i + 1, n_found_sol[i], average_gainz[i]);
 	// printf("Neighborhood #%d: %d %.2lf\n", n_neigh, logs->get_individual_log(), logs->get_individual_average());
